@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
 import { Car, CarFront, CircleHelp, Minus, Plus, Truck, type LucideIcon } from "lucide-react";
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { CITIES, EMAIL, IMAGES, PHONE, VEHICLE_TYPES, waLink, type City, type VehicleTypeId } from "../data";
 import { Button, ease, Eyebrow, SplitWords, softSpring } from "./motion";
 
@@ -216,6 +216,28 @@ export default function Contact() {
     }` +
     ` en ${city}, para ${who === "Empresa" ? "mi empresa" : "uso personal"}.`;
 
+  // Llegada desde el botón "Cotizar": el formulario se levanta, se ilumina el borde y pasa una línea de carril
+  const arrive = useAnimationControls();
+  const sweep = useAnimationControls();
+  useEffect(() => {
+    const onArrive = (e: Event) => {
+      if ((e as CustomEvent<string>).detail !== "cotizar") return;
+      arrive.start({
+        y: [0, -14, 0],
+        scale: [1, 1.015, 1],
+        boxShadow: [
+          "0 0 0 0px rgba(224,169,59,0)",
+          "0 0 0 3px rgba(224,169,59,0.9)",
+          "0 0 0 0px rgba(224,169,59,0)",
+        ],
+        transition: { duration: 1.1, ease },
+      });
+      sweep.start({ scaleX: [0, 1, 1], opacity: [1, 1, 0], transition: { duration: 1.1, ease, times: [0, 0.55, 1] } });
+    };
+    window.addEventListener("trocha:arrive", onArrive);
+    return () => window.removeEventListener("trocha:arrive", onArrive);
+  }, [arrive, sweep]);
+
   const submit = (e: FormEvent) => {
     e.preventDefault();
     window.open(waLink(message), "_blank", "noopener,noreferrer");
@@ -272,13 +294,20 @@ export default function Contact() {
           </motion.dl>
         </div>
 
+        <motion.div id="cotizar" animate={arrive} className="relative scroll-mt-24 rounded-[22px] lg:col-span-6 lg:col-start-7">
+        <motion.span
+          aria-hidden
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={sweep}
+          className="lane-dash-x pointer-events-none absolute inset-x-6 -top-3 z-10 h-[4px] origin-left"
+        />
         <motion.form
           onSubmit={submit}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 1, ease }}
-          className="rounded-[22px] bg-tarmac/90 p-5 shadow-[var(--shadow-float)] ring-1 ring-bone/[0.08] backdrop-blur-md sm:p-8 lg:col-span-6 lg:col-start-7"
+          className="rounded-[22px] bg-tarmac/90 p-5 shadow-[var(--shadow-float)] ring-1 ring-bone/[0.08] backdrop-blur-md sm:p-8"
         >
           <div className="grid gap-5">
             <label className="block">
@@ -327,6 +356,7 @@ export default function Contact() {
             Enviar por WhatsApp
           </Button>
         </motion.form>
+        </motion.div>
       </div>
     </section>
   );

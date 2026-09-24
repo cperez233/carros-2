@@ -13,7 +13,7 @@ export function Footer() {
         </div>
         <nav aria-label="Pie de página" className="md:col-span-3">
           <ul className="grid gap-2 text-[14px]">
-            {[...LINKS, { id: "inventario", label: "Inventario", href: "/inventario" }, { id: "contacto", label: "Cotizar", href: "/#contacto" }].map((l) => (
+            {[...LINKS, { id: "inventario", label: "Inventario", href: "/inventario" }, { id: "contacto", label: "Cotizar", href: "/#cotizar" }].map((l) => (
               <li key={l.id}>
                 <a href={linkHref(l.href, isInventoryPath() ? "inventario" : "home")} className="relative text-bone/80 transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-lane after:transition-transform after:duration-300 hover:text-bone hover:after:scale-x-100">
                   {l.label}

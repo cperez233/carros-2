@@ -8,7 +8,7 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { ArrowUpRight, Building2, CarFront, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Building2, CarFront, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PHONE } from "../data";
 import { ease, softSpring, spring, useCanHover } from "./motion";
@@ -17,7 +17,7 @@ export type Page = "home" | "inventario";
 export const isInventoryPath = () => typeof window !== "undefined" && window.location.pathname.startsWith("/inventario");
 
 export const LINKS: { id: string; label: string; icon: LucideIcon; href: string }[] = [
-  { id: "flota", label: "Flota", icon: CarFront, href: "/#flota" },
+  { id: "flota", label: "Inventario", icon: CarFront, href: "/#flota" },
   { id: "incluye", label: "Incluye", icon: ShieldCheck, href: "/#incluye" },
   { id: "contrato", label: "Contrato", icon: Route, href: "/#contrato" },
   { id: "clientes", label: "Empresas", icon: Building2, href: "/#clientes" },
@@ -75,7 +75,7 @@ function useActiveSection(page: Page) {
 }
 
 /** Esquinas: logo que se encoge al bajar, teléfono a la derecha y línea de carril que marca el avance. */
-function Corners() {
+function Corners({ page }: { page: Page }) {
   const { scrollY, scrollYProgress } = useScroll();
   const [compact, setCompact] = useState(false);
   useMotionValueEvent(scrollY, "change", (v) => setCompact(v > 120));
@@ -103,6 +103,22 @@ function Corners() {
         >
           <Logo compact={compact} />
         </motion.div>
+        <AnimatePresence>
+          {page === "inventario" && (
+            <motion.a
+              href="/"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.4, ease }}
+              whileTap={{ scale: 0.95 }}
+              className="group pointer-events-auto ml-2 mr-auto flex h-11 items-center gap-2 rounded-[14px] bg-tarmac/85 px-3.5 text-[14px] font-semibold text-bone shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-md transition-colors hover:bg-tarmac"
+            >
+              <ArrowLeft aria-hidden className="h-4 w-4 text-lane transition-transform duration-300 group-hover:-translate-x-1" />
+              Volver al inicio
+            </motion.a>
+          )}
+        </AnimatePresence>
         <motion.a
           href={`tel:${PHONE.replace(/\s/g, "")}`}
           whileHover={{ y: -2 }}
@@ -181,26 +197,6 @@ function Dock({ page }: { page: Page }) {
       className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[max(12px,env(safe-area-inset-bottom))] sm:pb-5"
     >
       <div className="relative">
-      {/* Acceso al inventario: aparece solo mientras estás en la sección Flota */}
-      <AnimatePresence>
-        {page === "home" && active === "flota" && (
-          <motion.a
-            href="/inventario"
-            initial={{ opacity: 0, y: 14, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.92, transition: { duration: 0.2 } }}
-            transition={spring}
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.95 }}
-            className="group absolute bottom-full left-1/2 mb-3 flex h-11 -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-bone pl-3 pr-4 text-[14px] font-semibold text-asphalt shadow-[var(--shadow-float)]"
-          >
-            <LayoutGrid aria-hidden className="h-4 w-4" />
-            Ver inventario completo
-            <ArrowUpRight aria-hidden className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            <span aria-hidden className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 rounded-[2px] bg-bone" />
-          </motion.a>
-        )}
-      </AnimatePresence>
       <div
         onMouseMove={(e) => magnify && mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(Infinity)}
@@ -211,7 +207,7 @@ function Dock({ page }: { page: Page }) {
         ))}
         <span aria-hidden className="mx-1 mb-3 hidden h-7 w-px self-end bg-bone/10 sm:block" />
         <motion.a
-          href={linkHref("/#contacto", page)}
+          href={linkHref("/#cotizar", page)}
           whileHover={{ y: -3 }}
           whileTap={{ scale: 0.92 }}
           transition={softSpring}
@@ -230,7 +226,7 @@ function Dock({ page }: { page: Page }) {
 export default function Nav({ page = "home" }: { page?: Page }) {
   return (
     <>
-      <Corners />
+      <Corners page={page} />
       <Dock page={page} />
     </>
   );

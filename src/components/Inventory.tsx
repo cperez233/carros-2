@@ -394,6 +394,12 @@ export default function Inventory() {
           Las tarifas incluyen seguro todo riesgo, mantenimiento, SOAT e impuestos, antes de IVA. Las fotos son de referencia de la línea;
           la disponibilidad se confirma al cotizar.
         </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button href="/" variant="ghost">
+            Volver al inicio
+          </Button>
+          <Button href="/#cotizar">Cotizar otro vehículo</Button>
+        </div>
       </div>
 
       <AnimatePresence>{open && <UnitSheet key={open.code} u={open} onClose={() => setOpen(null)} />}</AnimatePresence>

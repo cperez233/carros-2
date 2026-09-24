@@ -15,11 +15,28 @@ const OPEN_MS = 750;
 
 type Phase = "idle" | "closing" | "opening";
 
+/** Avisa cuándo terminó el desplazamiento para que la sección haga su animación de llegada. */
+function announceArrival(id: string, delay = 0) {
+  let last = window.scrollY;
+  let still = 0;
+  const started = Date.now();
+  const tick = setInterval(() => {
+    still = Math.abs(window.scrollY - last) < 1 ? still + 1 : 0;
+    last = window.scrollY;
+    if (still >= 2 || Date.now() - started > 2500) {
+      clearInterval(tick);
+      setTimeout(() => window.dispatchEvent(new CustomEvent("trocha:arrive", { detail: id })), delay);
+    }
+  }, 80);
+}
+
 /** Lleva a una sección sin dejar el #ancla en la URL (así F5 vuelve arriba). */
 function scrollToSection(id: string, smooth: boolean) {
   const el = id ? document.getElementById(id) : null;
   if (el) el.scrollIntoView({ behavior: smooth ? "smooth" : "instant", block: "start" });
   else window.scrollTo({ top: 0, behavior: smooth ? "smooth" : "instant" });
+  // Tras un cambio de página espera a que el telón se levante
+  if (el) announceArrival(id, smooth ? 0 : 650);
 }
 
 /** Telón entre páginas: sube desde abajo para tapar y se levanta hacia arriba para mostrar la página nueva. */
