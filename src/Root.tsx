@@ -2,12 +2,12 @@ import { motion, MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import HomePage from "./App";
 import InventoryPage from "./InventoryPage";
-import Nav, { type Page } from "./components/Nav";
+import Nav, { LogoMark, Wordmark, type Page } from "./components/Nav";
 
 const pageOf = (pathname: string): Page => (pathname.startsWith("/inventario") ? "inventario" : "home");
 const TITLES: Record<Page, string> = {
-  home: "Trocha · Renta mensual de camionetas",
-  inventario: "Inventario · Trocha",
+  home: "Master Service Quality · Renta de camionetas en Barrancabermeja",
+  inventario: "Inventario · Master Service Quality",
 };
 const curtainEase = [0.76, 0, 0.24, 1] as [number, number, number, number];
 const CLOSE_MS = 550;
@@ -25,7 +25,7 @@ function announceArrival(id: string, delay = 0) {
     last = window.scrollY;
     if (still >= 2 || Date.now() - started > 2500) {
       clearInterval(tick);
-      setTimeout(() => window.dispatchEvent(new CustomEvent("trocha:arrive", { detail: id })), delay);
+      setTimeout(() => window.dispatchEvent(new CustomEvent("master:arrive", { detail: id })), delay);
     }
   }, 80);
 }
@@ -54,7 +54,10 @@ function Curtain({ phase }: { phase: Phase }) {
       className="pointer-events-none fixed inset-0 z-[90] flex items-center justify-center bg-tarmac"
     >
       <div className="flex w-[min(70vw,520px)] flex-col items-center gap-5">
-        <span className="font-display text-[44px] font-bold leading-none tracking-tight text-bone">Trocha</span>
+        <span className="flex items-center gap-4 text-bone">
+          <LogoMark size={60} />
+          <Wordmark large />
+        </span>
         <motion.span
           animate={{ scaleX: phase === "idle" ? 0 : 1 }}
           transition={{ duration: 0.6, ease: curtainEase }}

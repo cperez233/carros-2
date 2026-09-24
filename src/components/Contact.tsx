@@ -1,10 +1,10 @@
 import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
-import { Car, CarFront, CircleHelp, Minus, Plus, Truck, type LucideIcon } from "lucide-react";
+import { CarFront, CircleHelp, Minus, Plus, Truck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { CITIES, EMAIL, IMAGES, PHONE, VEHICLE_TYPES, waLink, type City, type VehicleTypeId } from "../data";
 import { Button, ease, Eyebrow, SplitWords, softSpring } from "./motion";
 
-type Who = "Empresa" | "Particular";
+type Who = "Empresa" | "Persona natural";
 
 function Chips<T extends string>({
   name,
@@ -48,7 +48,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-const TYPE_ICONS: Record<VehicleTypeId, LucideIcon> = { auto: Car, suv: CarFront, pickup: Truck, nose: CircleHelp };
+const TYPE_ICONS: Record<VehicleTypeId, LucideIcon> = { pickup4x4: Truck, pickup4x2: Truck, suv: CarFront, nose: CircleHelp };
 
 function VehiclePicker({
   type,
@@ -200,8 +200,8 @@ function Counter({ value, onChange }: { value: number; onChange: (n: number) => 
 }
 
 export default function Contact() {
-  const [city, setCity] = useState<City>("Bogotá");
-  const [type, setType] = useState<VehicleTypeId>("suv");
+  const [city, setCity] = useState<City>("Barrancabermeja");
+  const [type, setType] = useState<VehicleTypeId>("pickup4x4");
   const [model, setModel] = useState("");
   const [who, setWho] = useState<Who>("Empresa");
   const [qty, setQty] = useState(1);
@@ -234,8 +234,8 @@ export default function Contact() {
       });
       sweep.start({ scaleX: [0, 1, 1], opacity: [1, 1, 0], transition: { duration: 1.1, ease, times: [0, 0.55, 1] } });
     };
-    window.addEventListener("trocha:arrive", onArrive);
-    return () => window.removeEventListener("trocha:arrive", onArrive);
+    window.addEventListener("master:arrive", onArrive);
+    return () => window.removeEventListener("master:arrive", onArrive);
   }, [arrive, sweep]);
 
   const submit = (e: FormEvent) => {
@@ -316,11 +316,11 @@ export default function Contact() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="organization"
-                placeholder="Ej. Constructora Los Andes"
+                placeholder="Ej. Montajes y Obras SAS"
                 className="h-12 w-full rounded-[10px] bg-asphalt px-4 text-[16px] text-bone ring-1 ring-bone/10 placeholder:text-stone-dark focus:outline-none focus:ring-2 focus:ring-lane"
               />
             </label>
-            <Field label="Ciudad de entrega">
+            <Field label="Municipio de entrega">
               <Chips name="ciudad" options={CITIES} value={city} onChange={setCity} />
             </Field>
             <Field label="Tipo de vehículo">
@@ -328,7 +328,7 @@ export default function Contact() {
             </Field>
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Es para">
-                <Chips name="cliente" options={["Empresa", "Particular"] as const} value={who} onChange={setWho} />
+                <Chips name="cliente" options={["Empresa", "Persona natural"] as const} value={who} onChange={setWho} />
               </Field>
               <Field label="Cantidad">
                 <Counter value={qty} onChange={setQty} />

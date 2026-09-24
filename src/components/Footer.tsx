@@ -1,4 +1,4 @@
-import { CITIES, EMAIL, PHONE } from "../data";
+import { ADDRESS, COMPANY, EMAIL, PHONE } from "../data";
 import { isInventoryPath, LINKS, linkHref, Logo } from "./Nav";
 
 export function Footer() {
@@ -8,7 +8,7 @@ export function Footer() {
         <div className="md:col-span-5">
           <Logo />
           <p className="mt-4 max-w-sm text-[14px] leading-[1.65] text-stone">
-            Renta mensual de camionetas, pick-ups y SUV para empresas y particulares en {CITIES.slice(0, 3).join(", ")} y {CITIES[3]}.
+            Renta mensual de camionetas, pick-ups y SUV para empresas contratistas en Barrancabermeja y el Magdalena Medio.
           </p>
         </div>
         <nav aria-label="Pie de página" className="md:col-span-3">
@@ -25,7 +25,8 @@ export function Footer() {
         <div className="text-[14px] md:col-span-4">
           <p className="text-bone/80">{PHONE}</p>
           <p className="mt-2 text-bone/80">{EMAIL}</p>
-          <p className="mt-6 text-[13px] text-stone">© {new Date().getFullYear()} Trocha. Tarifas sujetas a disponibilidad y estudio de documentos.</p>
+          <p className="mt-2 text-bone/80">{ADDRESS}</p>
+          <p className="mt-6 text-[13px] text-stone">© {new Date().getFullYear()} {COMPANY}. Tarifas sujetas a disponibilidad y estudio de documentos.</p>
         </div>
       </div>
     </footer>

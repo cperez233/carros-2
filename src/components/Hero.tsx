@@ -4,10 +4,10 @@ import { CITIES, IMAGES, waLink } from "../data";
 import { Button, ease, spring, Tilt } from "./motion";
 
 const ROWS: { label: string; on: boolean }[] = [
-  { label: "Seguro todo riesgo", on: true },
+  { label: "Póliza todo riesgo", on: true },
   { label: "Mantenimiento", on: true },
-  { label: "SOAT", on: true },
-  { label: "Impuestos", on: true },
+  { label: "GPS satelital", on: true },
+  { label: "SOAT y tecnomecánica", on: true },
   { label: "Combustible y peajes", on: false },
 ];
 
@@ -155,8 +155,8 @@ export default function Hero() {
               transition={{ duration: 0.9, delay: 1.6, ease }}
               className="mt-6 hidden max-w-[34rem] text-[17px] font-medium leading-[1.65] text-bone [text-shadow:0_1px_12px_rgba(10,10,8,.8)] sm:block"
             >
-              Para empresas y particulares. Una tarifa fija cada mes con seguro todo riesgo, mantenimiento, SOAT e impuestos. Sin
-              permanencia: el contrato es mes a mes.
+              Para empresas contratistas en Barrancabermeja y el Magdalena Medio. Una tarifa fija cada mes con póliza todo riesgo,
+              mantenimiento, GPS satelital, SOAT y tecnomecánica. Sin permanencia: el contrato es mes a mes.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 16 }}

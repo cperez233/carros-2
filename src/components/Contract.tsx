@@ -5,11 +5,11 @@ import { ease, Eyebrow, reveal, SplitWords } from "./motion";
 const STEPS = [
   {
     title: "Cotizas",
-    body: "Nos dices qué vehículo necesitas, cuántas unidades y en qué ciudad. Te enviamos la tarifa mensual por escrito.",
+    body: "Nos dices qué vehículo necesitas, cuántas unidades, dónde va a operar y por cuánto tiempo. Te enviamos la tarifa por escrito.",
   },
   {
     title: "Firmas y lo recibes",
-    body: "Revisamos tus documentos, firmas el contrato y te entregamos el vehículo en tu ciudad con SOAT y seguro vigentes.",
+    body: "Revisamos tus documentos, firmas el contrato y te entregamos la camioneta en Barrancabermeja o en el sitio de la operación, con SOAT, tecnomecánica y póliza vigentes.",
   },
   {
     title: "Sigues mes a mes",
@@ -38,7 +38,7 @@ export default function Contract() {
             </h2>
           </div>
           <motion.p {...reveal} className="max-w-md text-[16px] leading-[1.65] text-bone/75 lg:col-span-4 lg:col-start-9">
-            Sirve para un proyecto de tres meses, para cubrir un vehículo propio que está en el taller o para tenerlo todo el año.
+            Sirve para un contrato de obra o mantenimiento de pocos meses, para cubrir una unidad propia que está en el taller o para toda la vigencia del contrato con tu cliente.
           </motion.p>
         </div>
 

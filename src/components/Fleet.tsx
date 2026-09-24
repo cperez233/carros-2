@@ -96,7 +96,7 @@ export default function Fleet() {
               <SplitWords text="ve la tarifa del mes" className="text-bone/50" delay={0.12} />
             </h2>
             <motion.p {...reveal} className="mt-5 max-w-xl text-[16px] leading-[1.65] text-bone/75">
-              Precios por mes, antes de IVA. Si necesitas otra línea o varias unidades para tu empresa, pregúntanos.
+              Precios por mes, antes de IVA. Si necesitas otra línea o varias unidades para tu contrato, pregúntanos.
             </motion.p>
           </div>
 
@@ -343,7 +343,7 @@ export default function Fleet() {
               Ver el inventario completo
             </span>
             <span className="mt-2 block text-[14px] text-stone">
-              Unidades disponibles por ciudad, con año, kilometraje, caja y tarifa. También automóviles.
+              Unidades disponibles por municipio, con año, kilometraje, caja y tarifa.
             </span>
           </span>
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-lane text-asphalt transition-transform duration-500 group-hover:-rotate-45 group-hover:scale-110">

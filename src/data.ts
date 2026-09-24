@@ -1,15 +1,19 @@
 export const img = (id: string, w = 1600) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
 
-// PLACEHOLDER: número de WhatsApp, teléfono y correo del negocio
-export const WHATSAPP = "573000000000";
-export const PHONE = "+57 300 000 0000";
-export const EMAIL = "flota@trocha.co";
+// PROVISIONAL: número de WhatsApp y teléfono mientras se define el oficial
+export const WHATSAPP = "573232015887";
+export const PHONE = "+57 323 201 5887";
+export const EMAIL = "comercial@masterservicequality.co"; // PLACEHOLDER: confirmar correo real
+export const COMPANY = "Master Service Quality SAS";
+export const BRAND = "Master";
+export const ADDRESS = "Barrancabermeja, Santander";
 
 export const waLink = (text: string) =>
   `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
 
-export const CITIES = ["Bogotá", "Medellín", "Bucaramanga", "Cali"] as const;
+// PLACEHOLDER: confirmar municipios donde entregan
+export const CITIES = ["Barrancabermeja", "Puerto Wilches", "Sabana de Torres", "Yondó"] as const;
 export type City = (typeof CITIES)[number];
 
 export type Category = "pickup" | "suv";
@@ -38,7 +42,7 @@ export const FLEET: Vehicle[] = [
     gearbox: "Automática",
     drive: "4x4",
     fuel: "Diésel",
-    use: "Obra, campo y carga liviana",
+    use: "Campo, pozos y vías destapadas",
     image: img("photo-1759213281196-6c5e463b3021", 1200),
     position: "50% 60%",
   },
@@ -51,7 +55,7 @@ export const FLEET: Vehicle[] = [
     gearbox: "Automática",
     drive: "4x4",
     fuel: "Diésel",
-    use: "Trocha y carretera destapada",
+    use: "Supervisión de obra y mantenimiento",
     image: img("photo-1677739455846-2467604ea8b6", 1200),
     position: "50% 55%",
   },
@@ -64,7 +68,7 @@ export const FLEET: Vehicle[] = [
     gearbox: "Mecánica",
     drive: "4x2",
     fuel: "Gasolina",
-    use: "Ciudad y visitas comerciales",
+    use: "Diligencias en casco urbano",
     image: img("photo-1658504010272-0ee9efe72239", 1200),
     position: "50% 60%",
   },
@@ -77,7 +81,7 @@ export const FLEET: Vehicle[] = [
     gearbox: "Automática",
     drive: "4x4",
     fuel: "Diésel",
-    use: "Equipos de trabajo y familia",
+    use: "Cuadrillas y equipos de trabajo",
     image: img("photo-1670054953044-2605dbd0d747", 1200),
     position: "60% 60%",
   },
@@ -90,7 +94,7 @@ export const FLEET: Vehicle[] = [
     gearbox: "Automática",
     drive: "4x4",
     fuel: "Diésel",
-    use: "Gerencia y viajes largos",
+    use: "Gerencia y visitas a campo",
     image: img("photo-1630826362226-a509049bcdbf", 1200),
     position: "50% 58%",
   },
@@ -101,20 +105,20 @@ export const cop = (n: number) =>
 
 export const INCLUDED = [
   {
-    title: "Seguro todo riesgo",
+    title: "Póliza todo riesgo",
     detail: "Daños propios, hurto y responsabilidad civil. El deducible depende de la póliza.",
   },
   {
     title: "Mantenimiento",
-    detail: "Revisiones preventivas según el manual del fabricante y reparaciones por desgaste normal.",
+    detail: "Preventivo según el manual del fabricante y correctivo por desgaste normal: correas, frenos, llantas y aceite.",
   },
   {
-    title: "SOAT",
-    detail: "Vigente durante todo el contrato. La renovación la hacemos nosotros.",
+    title: "GPS satelital",
+    detail: "Cada unidad lleva GPS activo durante todo el contrato.",
   },
   {
-    title: "Impuestos",
-    detail: "El impuesto vehicular anual va por nuestra cuenta.",
+    title: "SOAT y tecnomecánica",
+    detail: "Vigentes durante todo el contrato, junto con los impuestos. Las renovaciones corren por nuestra cuenta.",
   },
 ];
 
@@ -123,15 +127,15 @@ export const NOT_INCLUDED = ["Combustible", "Peajes y parqueaderos", "Multas de 
 export const IMAGES = {
   hero: img("photo-1649280501271-1b51feaaafd3", 2400),
   empresas: img("photo-1605893477799-b99e3b8b93fe", 1800),
-  particulares: img("photo-1670736297573-fde2cbcf1de7", 1800),
+  propietarios: img("photo-1670736297573-fde2cbcf1de7", 1800),
   valley: img("photo-1623167987947-c25a2cc06a21", 2400),
 };
 
-// Modelos comunes en Colombia para el formulario de cotización
+// Modelos comunes en la región para el formulario de cotización
 export const VEHICLE_TYPES = [
-  { id: "auto", label: "Automóvil", hint: "Ciudad y trayectos cortos", models: ["Kia Picanto", "Mazda 2", "Chevrolet Onix", "Renault Logan"] },
-  { id: "suv", label: "SUV", hint: "Familia, ciudad y carretera", models: ["Renault Duster", "Mazda CX-5", "Kia Sportage", "Toyota Fortuner"] },
-  { id: "pickup", label: "Pick-up", hint: "Obra, campo y carga", models: ["Toyota Hilux", "Ford Ranger", "Nissan Frontier", "Chevrolet Colorado"] },
+  { id: "pickup4x4", label: "Pick-up 4x4", hint: "Campo, pozos y vías destapadas", models: ["Toyota Hilux", "Ford Ranger", "Nissan Frontier", "Chevrolet D-Max"] },
+  { id: "pickup4x2", label: "Pick-up 4x2", hint: "Obra y vía pavimentada", models: ["Toyota Hilux", "Nissan Frontier", "Mitsubishi L200", "Chevrolet D-Max"] },
+  { id: "suv", label: "SUV", hint: "Personal, supervisión y gerencia", models: ["Renault Duster", "Toyota Fortuner", "Toyota Prado", "Mitsubishi Montero"] },
   { id: "nose", label: "Aún no sé", hint: "Te recomendamos uno", models: [] as string[] },
 ] as const;
 export type VehicleTypeId = (typeof VEHICLE_TYPES)[number]["id"];

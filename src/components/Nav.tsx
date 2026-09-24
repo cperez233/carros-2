@@ -10,7 +10,7 @@ import {
 } from "framer-motion";
 import { ArrowLeft, Building2, CarFront, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { PHONE } from "../data";
+import { BRAND, COMPANY, PHONE } from "../data";
 import { ease, softSpring, spring, useCanHover } from "./motion";
 
 export type Page = "home" | "inventario";
@@ -27,18 +27,55 @@ const INVENTORY_LINK = { id: "inventario", label: "Inventario", icon: LayoutGrid
 /** En la página de inicio los enlaces a secciones son anclas locales; desde otra página vuelven al inicio. */
 export const linkHref = (href: string, page: Page) => (page === "home" && href.startsWith("/#") ? href.slice(1) : href);
 
+/** Volante del logo de Master dentro del cuadro amarillo de carril. Gira al pasar el mouse. */
+export function LogoMark({ size = 32, className = "" }: { size?: number; className?: string }) {
+  return (
+    <motion.span
+      aria-hidden
+      whileHover={{ rotate: -8 }}
+      transition={softSpring}
+      style={{ width: size, height: size, borderRadius: size * 0.28 }}
+      className={`flex shrink-0 items-center justify-center bg-lane text-asphalt ${className}`}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.4}
+        strokeLinecap="round"
+        className="h-[72%] w-[72%] transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] group-hover:-rotate-[35deg]"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none" />
+        <path d="M3.4 11.2 9.5 12M14.5 12l6.1-.8M12 14.6V21" />
+      </svg>
+    </motion.span>
+  );
+}
+
+/** Nombre en dos niveles: MASTER grande y SERVICE QUALITY debajo, como en el logo original. */
+export function Wordmark({ large = false }: { large?: boolean }) {
+  return (
+    <span className="flex flex-col items-start">
+      <span className={`font-display font-bold uppercase leading-[0.82] tracking-[0.03em] ${large ? "text-[56px]" : "text-[24px]"}`}>
+        {BRAND}
+      </span>
+      <span
+        className={`flex w-full items-center font-semibold uppercase ${
+          large ? "mt-2 gap-2 text-[13px] tracking-[0.34em] text-stone" : "mt-[3px] gap-1 text-[8.5px] tracking-[0.24em] text-bone/60"
+        }`}
+      >
+        <span aria-hidden className={`shrink-0 bg-lane ${large ? "h-[3px] w-5" : "h-[2px] w-2"}`} />
+        Service Quality
+      </span>
+    </span>
+  );
+}
+
 export function Logo({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
   return (
-    <a href={isInventoryPath() ? "/" : "#inicio"} className={`group flex items-center gap-2.5 ${className}`} aria-label="Trocha, inicio">
-      <motion.span
-        aria-hidden
-        whileHover={{ rotate: -8 }}
-        transition={softSpring}
-        className="flex h-8 w-8 shrink-0 flex-col items-center justify-center gap-[3px] rounded-[9px] bg-lane"
-      >
-        <span className="h-[5px] w-[3px] rounded-full bg-asphalt transition-transform duration-500 group-hover:-translate-y-[3px]" />
-        <span className="h-[5px] w-[3px] rounded-full bg-asphalt transition-transform duration-500 group-hover:translate-y-[3px]" />
-      </motion.span>
+    <a href={isInventoryPath() ? "/" : "#inicio"} className={`group flex items-center gap-2.5 ${className}`} aria-label={`${COMPANY}, inicio`}>
+      <LogoMark />
       <AnimatePresence initial={false}>
         {!compact && (
           <motion.span
@@ -46,9 +83,9 @@ export function Logo({ compact = false, className = "" }: { compact?: boolean; c
             animate={{ opacity: 1, width: "auto" }}
             exit={{ opacity: 0, width: 0 }}
             transition={{ duration: 0.35, ease }}
-            className="overflow-hidden whitespace-nowrap font-display text-[26px] font-bold leading-none tracking-tight"
+            className="overflow-hidden whitespace-nowrap"
           >
-            Trocha
+            <Wordmark />
           </motion.span>
         )}
       </AnimatePresence>

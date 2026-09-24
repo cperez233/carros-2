@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Trocha · asfalto, línea amarilla de carretera, hueso */
+/* Master Service Quality · asfalto, línea amarilla de carretera, hueso */
 @theme {
   --color-asphalt: #131514;
   --color-tarmac: #1b1e1c;

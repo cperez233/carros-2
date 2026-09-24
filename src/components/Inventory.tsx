@@ -11,7 +11,6 @@ type Sort = "asc" | "desc";
 
 const TYPES: { id: TypeFilter; label: string }[] = [
   { id: "all", label: "Todos" },
-  { id: "auto", label: "Automóvil" },
   { id: "suv", label: "SUV" },
   { id: "pickup", label: "Pick-up" },
 ];
@@ -156,7 +155,7 @@ function UnitSheet({ u, onClose }: { u: Unit; onClose: () => void }) {
     ["Código", u.code],
     ["Año", String(u.year)],
     ["Kilometraje", kmFmt(u.km)],
-    ["Ciudad", u.city],
+    ["Municipio", u.city],
     ["Caja", u.gearbox],
     ["Combustible", u.fuel],
     ["Tracción", u.drive],
@@ -233,7 +232,7 @@ function UnitSheet({ u, onClose }: { u: Unit; onClose: () => void }) {
           </motion.h2>
           <motion.div variants={item} className="mt-4 inline-block rounded-[14px] bg-lane px-4 py-2.5 text-asphalt">
             <p className="font-display text-[34px] font-bold leading-none tracking-tight">{cop(u.price)}</p>
-            <p className="mt-1 text-[12px] font-semibold">al mes + IVA · seguro, mantenimiento, SOAT e impuestos incluidos</p>
+            <p className="mt-1 text-[12px] font-semibold">al mes + IVA · póliza, mantenimiento, GPS, SOAT y tecnomecánica incluidos</p>
           </motion.div>
 
           <motion.dl variants={item} className="mt-6 grid grid-cols-1 gap-x-6 sm:grid-cols-2">
@@ -332,7 +331,7 @@ export default function Inventory() {
             <span aria-hidden className="h-8 w-px shrink-0 bg-bone/10" />
             <Segmented
               id="city"
-              label="Ciudad"
+              label="Municipio"
               options={[{ id: "all" as CityFilter, label: "Todas" }, ...CITIES.map((c) => ({ id: c as CityFilter, label: c }))]}
               value={city}
               onChange={setCity}
@@ -370,7 +369,7 @@ export default function Inventory() {
               className="rounded-[22px] bg-tarmac p-8 text-center ring-1 ring-bone/[0.06]"
             >
               <p className="font-display text-[30px] font-semibold">No hay unidades con esos filtros</p>
-              <p className="mt-2 text-[15px] text-stone">Podemos traer el vehículo desde otra ciudad o conseguir uno similar.</p>
+              <p className="mt-2 text-[15px] text-stone">Podemos llevar la unidad desde otro municipio o conseguir una similar.</p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Button onClick={reset} variant="ghost">
                   Ver todo el inventario
@@ -378,7 +377,7 @@ export default function Inventory() {
                 <Button
                   href={waLink(
                     `Hola, busco un ${type === "all" ? "vehículo" : TYPE_LABEL[type as UnitType]} en renta mensual en ${
-                      city === "all" ? "Colombia" : city
+                      city === "all" ? "el Magdalena Medio" : city
                     }.`
                   )}
                   external
@@ -391,7 +390,7 @@ export default function Inventory() {
         </AnimatePresence>
 
         <p className="mt-10 text-[13px] leading-[1.6] text-stone">
-          Las tarifas incluyen seguro todo riesgo, mantenimiento, SOAT e impuestos, antes de IVA. Las fotos son de referencia de la línea;
+          Las tarifas incluyen póliza todo riesgo, mantenimiento, GPS satelital, SOAT y tecnomecánica, antes de IVA. Las fotos son de referencia de la línea;
           la disponibilidad se confirma al cotizar.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">

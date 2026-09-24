@@ -3,38 +3,42 @@ import { useRef, useState } from "react";
 import { IMAGES, waLink } from "../data";
 import { Button, ease, Eyebrow, softSpring, staggerChild, staggerParent } from "./motion";
 
-type Kind = "empresas" | "particulares";
+type Kind = "empresas" | "propietarios";
 
 const CONTENT: Record<
   Kind,
-  { label: string; title: string; points: string[]; docs: string[]; cta: string; image: string; alt: string; position: string }
+  { label: string; title: string; points: string[]; docs: string[]; cta: string; button: string; image: string; alt: string; position: string }
 > = {
   empresas: {
     label: "Empresas",
-    title: "Vehículos para tu operación, en una sola factura",
+    title: "Camionetas para tu contrato, en una sola factura",
     points: [
       "Una o varias unidades en el mismo contrato.",
       "Factura electrónica mensual a nombre de la empresa.",
-      "Vehículos en Bogotá, Medellín, Bucaramanga y Cali con la misma cuenta.",
+      "Te entregamos SOAT, tecnomecánica y póliza de cada unidad para inscribirla con tu contratante.",
       "Agregas o devuelves unidades al cierre de cada mes.",
     ],
     docs: ["RUT", "Certificado de Cámara de Comercio", "Cédula del representante legal"],
-    cta: "Hola, quiero cotizar vehículos en renta mensual para mi empresa.",
+    cta: "Hola, quiero cotizar camionetas en renta mensual para mi empresa.",
+    button: "Cotizar para empresas",
     image: IMAGES.empresas,
     alt: "Ford Ranger gris en una calle de la ciudad",
     position: "50% 55%",
   },
-  particulares: {
-    label: "Particulares",
-    title: "Un carro para ti, sin comprarlo",
+  // PLACEHOLDER: condiciones para propietarios, basadas en el comprobante de pago a proveedores
+  propietarios: {
+    label: "Propietarios",
+    title: "Pon tu camioneta a trabajar con nosotros",
     points: [
-      "El contrato va a tu nombre y pagas cada mes.",
-      "No pagas seguro, SOAT ni impuestos aparte.",
-      "Lo usas el tiempo que lo necesites y lo devuelves al cierre del mes.",
+      "La rentamos a empresas de la región y te pagamos por los días trabajados.",
+      "Pago mensual por transferencia a tu cuenta, con comprobante detallado.",
+      "GPS, póliza, mantenimientos y parqueo se descuentan uno por uno en el comprobante.",
+      "Retención en la fuente y ReteICA se aplican según la ley.",
     ],
-    docs: ["Cédula de ciudadanía", "Licencia de conducción vigente", "Estudio de crédito"],
-    cta: "Hola, quiero cotizar un vehículo en renta mensual para uso personal.",
-    image: IMAGES.particulares,
+    docs: ["Tarjeta de propiedad", "SOAT y tecnomecánica vigentes", "Cédula o RUT", "Certificación bancaria"],
+    cta: "Hola, tengo una camioneta y quiero afiliarla a Master Service Quality.",
+    button: "Afiliar mi camioneta",
+    image: IMAGES.propietarios,
     alt: "Toyota Land Cruiser Prado blanca junto a un lago rodeado de vegetación",
     position: "55% 92%",
   },
@@ -84,7 +88,7 @@ export default function Clients() {
           className="relative z-10 -mt-16 mx-2 rounded-[22px] bg-tarmac p-6 shadow-[var(--shadow-float)] ring-1 ring-bone/[0.06] sm:mx-8 sm:p-8 lg:col-span-6 lg:col-start-7 lg:row-start-1 lg:mx-0 lg:mt-0"
         >
           <Eyebrow>Para quién</Eyebrow>
-          <div role="tablist" aria-label="Tipo de cliente" className="mt-5 inline-flex rounded-[12px] bg-asphalt p-1">
+          <div role="tablist" aria-label="Tipo de aliado" className="mt-5 inline-flex rounded-[12px] bg-asphalt p-1">
             {(Object.keys(CONTENT) as Kind[]).map((k) => (
               <motion.button
                 key={k}
@@ -134,7 +138,7 @@ export default function Clients() {
                 </motion.p>
                 <motion.div variants={staggerChild} className="mt-6">
                   <Button href={waLink(c.cta)} external>
-                    Cotizar para {c.label.toLowerCase()}
+                    {c.button}
                   </Button>
                 </motion.div>
               </motion.div>

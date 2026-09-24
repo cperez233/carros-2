@@ -5,7 +5,7 @@ import { INCLUDED, NOT_INCLUDED } from "../data";
 import { ease, staggerChild, staggerParent, Tilt } from "./motion";
 
 const STATEMENT =
-  "Pagas lo mismo cada mes. Seguro todo riesgo, mantenimiento, SOAT e impuestos ya están en la tarifa, así que no hay cuentas sorpresa del carro.";
+  "Pagas lo mismo cada mes. Póliza todo riesgo, mantenimiento, GPS, SOAT y tecnomecánica ya están en la tarifa, así que no hay cuentas sorpresa de la camioneta.";
 
 function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
   const opacity = useTransform(progress, range, [0.18, 1]);
@@ -96,7 +96,7 @@ export default function Included() {
                 ))}
               </ul>
               <p className="mt-4 text-[14px] leading-[1.6] text-stone">
-                El vehículo tiene la restricción de pico y placa que le corresponda en cada ciudad, como cualquier otro.
+                El vehículo cumple las normas de tránsito de cada municipio, incluido el pico y placa donde aplique.
               </p>
             </Tilt>
           </motion.div>
