@@ -8,7 +8,7 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { Building2, CarFront, LayoutGrid, MessageCircle, Phone, ShieldCheck, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, Building2, CarFront, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PHONE } from "../data";
 import { ease, softSpring, spring, useCanHover } from "./motion";
@@ -18,10 +18,11 @@ export const isInventoryPath = () => typeof window !== "undefined" && window.loc
 
 export const LINKS: { id: string; label: string; icon: LucideIcon; href: string }[] = [
   { id: "flota", label: "Flota", icon: CarFront, href: "/#flota" },
-  { id: "inventario", label: "Inventario", icon: LayoutGrid, href: "/inventario" },
   { id: "incluye", label: "Incluye", icon: ShieldCheck, href: "/#incluye" },
+  { id: "contrato", label: "Contrato", icon: Route, href: "/#contrato" },
   { id: "clientes", label: "Empresas", icon: Building2, href: "/#clientes" },
 ];
+const INVENTORY_LINK = { id: "inventario", label: "Inventario", icon: LayoutGrid, href: "/inventario" };
 
 /** En la página de inicio los enlaces a secciones son anclas locales; desde otra página vuelven al inicio. */
 export const linkHref = (href: string, page: Page) => (page === "home" && href.startsWith("/#") ? href.slice(1) : href);
@@ -179,12 +180,33 @@ function Dock({ page }: { page: Page }) {
       transition={{ duration: 0.55, ease }}
       className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[max(12px,env(safe-area-inset-bottom))] sm:pb-5"
     >
+      <div className="relative">
+      {/* Acceso al inventario: aparece solo mientras estás en la sección Flota */}
+      <AnimatePresence>
+        {page === "home" && active === "flota" && (
+          <motion.a
+            href="/inventario"
+            initial={{ opacity: 0, y: 14, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.92, transition: { duration: 0.2 } }}
+            transition={spring}
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.95 }}
+            className="group absolute bottom-full left-1/2 mb-3 flex h-11 -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-bone pl-3 pr-4 text-[14px] font-semibold text-asphalt shadow-[var(--shadow-float)]"
+          >
+            <LayoutGrid aria-hidden className="h-4 w-4" />
+            Ver inventario completo
+            <ArrowUpRight aria-hidden className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <span aria-hidden className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 rounded-[2px] bg-bone" />
+          </motion.a>
+        )}
+      </AnimatePresence>
       <div
         onMouseMove={(e) => magnify && mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         className="flex items-end gap-0.5 rounded-[20px] bg-tarmac/90 p-1.5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl"
       >
-        {LINKS.map((l) => (
+        {(page === "inventario" ? [INVENTORY_LINK, ...LINKS.slice(1)] : LINKS).map((l) => (
           <DockItem key={l.id} href={linkHref(l.href, page)} label={l.label} Icon={l.icon} active={active === l.id} mouseX={mouseX} magnify={magnify} />
         ))}
         <span aria-hidden className="mx-1 mb-3 hidden h-7 w-px self-end bg-bone/10 sm:block" />
@@ -199,6 +221,7 @@ function Dock({ page }: { page: Page }) {
           <MessageCircle aria-hidden className="h-[18px] w-[18px] transition-transform duration-300 group-hover:-rotate-12" />
           Cotizar
         </motion.a>
+      </div>
       </div>
     </motion.nav>
   );
