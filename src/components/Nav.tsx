@@ -58,6 +58,7 @@ export function Logo({ compact = false, className = "" }: { compact?: boolean; c
 function useActiveSection(page: Page) {
   const [active, setActive] = useState(page === "inventario" ? "inventario" : "inicio");
   useEffect(() => {
+    setActive(page === "inventario" ? "inventario" : "inicio");
     if (page !== "home") return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),

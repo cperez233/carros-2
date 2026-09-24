@@ -129,10 +129,13 @@ export default function Hero() {
                 className="absolute -left-[52%] -top-[35%] h-[137%] w-[192%] max-w-none object-cover object-center sm:-left-[10%] sm:-top-[22%] sm:h-[122%] sm:w-[120%] lg:left-0 lg:top-0 lg:h-full lg:w-full lg:object-[50%_56%]"
               />
             </motion.div>
-            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/45 to-asphalt/20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-asphalt from-20% via-asphalt/60 via-45% to-transparent to-65% lg:hidden" />
-            <div className="absolute inset-0 bg-gradient-to-r from-asphalt/85 via-asphalt/35 to-transparent" />
-            <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-asphalt/70 to-transparent" />
+            {/* Celular: solo una sombra corta abajo para que la foto conserve su color */}
+            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/35 via-25% to-transparent to-50% sm:hidden" />
+            {/* Tablet y computador */}
+            <div className="absolute inset-0 hidden bg-gradient-to-t from-asphalt via-asphalt/45 to-asphalt/20 sm:block" />
+            <div className="absolute inset-0 hidden bg-gradient-to-t from-asphalt from-20% via-asphalt/60 via-45% to-transparent to-65% sm:block lg:hidden" />
+            <div className="absolute inset-0 hidden bg-gradient-to-r from-asphalt/85 via-asphalt/35 to-transparent sm:block" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-asphalt/50 to-transparent sm:h-40 sm:from-asphalt/70" />
           </motion.div>
         </motion.div>
 
@@ -141,23 +144,7 @@ export default function Hero() {
           className="relative mx-auto grid w-full max-w-[1320px] items-end gap-10 px-4 sm:px-8 lg:grid-cols-12"
         >
           <div className="lg:col-span-8">
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9, ease }}
-              className="inline-flex items-center gap-2 rounded-full bg-asphalt/70 py-2 pl-3 pr-3.5 text-[12.5px] sm:gap-2.5 sm:pr-4 sm:text-[14px] font-semibold text-bone shadow-[var(--shadow-rest)] ring-1 ring-bone/10 backdrop-blur-md"
-            >
-              <motion.span
-                aria-hidden
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 1, ease }}
-                className="h-[3px] w-7 origin-left rounded-full bg-lane"
-              />
-              <span className="sm:hidden">Bogotá · Medellín · Bucaramanga · Cali</span>
-              <span className="hidden sm:inline">Renta mensual en Bogotá, Medellín, Bucaramanga y Cali</span>
-            </motion.p>
-            <h1 className="mt-5 font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_24px_rgba(10,10,8,.55)]">
+            <h1 className="font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_18px_rgba(10,10,8,.7),0_0_48px_rgba(10,10,8,.45)]">
               <SpeedWords text="Camionetas, pick-ups y SUV" delay={1.05} />
               <br />
               <SpeedWords text="por mes" className="text-lane" delay={1.35} />
