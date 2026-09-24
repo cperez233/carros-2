@@ -90,6 +90,8 @@ function SpeedWords({ text, delay = 0, className = "" }: { text: string; delay?:
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
+  // En celular la franja de entrada se abre a la altura de la camioneta
+  const [phone] = useState(() => typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   // Al bajar, la foto se recoge en un marco redondeado y el texto sube más rápido que ella
   const frame = useTransform(
@@ -105,11 +107,11 @@ export default function Hero() {
   return (
     <section id="inicio" ref={ref} className="relative">
       {/* Foto + titular */}
-      <div className="relative flex min-h-[100svh] items-end overflow-hidden pb-20 pt-32 sm:min-h-[760px] sm:pb-28 lg:min-h-[100svh] lg:pb-44">
+      <div className="relative flex min-h-[100svh] items-end overflow-hidden pb-20 pt-32 sm:pb-28 lg:min-h-[100svh] lg:pb-44">
         <motion.div style={{ clipPath: frame }} className="absolute inset-0">
           {/* Entrada: la foto se abre desde una franja, como un parabrisas */}
           <motion.div
-            initial={{ clipPath: "inset(46% 0% 46% 0%)" }}
+            initial={{ clipPath: phone ? "inset(26% 0% 60% 0%)" : "inset(46% 0% 46% 0%)" }}
             animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
             transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
             className="absolute inset-0"
@@ -124,11 +126,11 @@ export default function Hero() {
                 src={IMAGES.hero}
                 alt="Pick-up doble cabina levantando polvo en una carretera destapada"
                 style={{ y: imgY, scale: imgScale }}
-                className="absolute inset-x-0 -top-[24%] h-[124%] w-full object-cover object-[64%_50%] sm:top-0 sm:h-full lg:object-[50%_56%]"
+                className="absolute -left-[52%] -top-[35%] h-[137%] w-[192%] max-w-none object-cover object-center sm:-left-[10%] sm:-top-[22%] sm:h-[122%] sm:w-[120%] lg:left-0 lg:top-0 lg:h-full lg:w-full lg:object-[50%_56%]"
               />
             </motion.div>
             <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/45 to-asphalt/20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/50 to-transparent lg:hidden" />
+            <div className="absolute inset-0 bg-gradient-to-t from-asphalt from-20% via-asphalt/60 via-45% to-transparent to-65% lg:hidden" />
             <div className="absolute inset-0 bg-gradient-to-r from-asphalt/85 via-asphalt/35 to-transparent" />
             <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-asphalt/70 to-transparent" />
           </motion.div>
@@ -143,7 +145,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.9, ease }}
-              className="inline-flex items-center gap-2.5 rounded-[12px] bg-asphalt/70 py-2 pl-3 pr-4 sm:rounded-full text-[14px] font-semibold text-bone shadow-[var(--shadow-rest)] ring-1 ring-bone/10 backdrop-blur-md"
+              className="inline-flex items-center gap-2 rounded-full bg-asphalt/70 py-2 pl-3 pr-3.5 text-[12.5px] sm:gap-2.5 sm:pr-4 sm:text-[14px] font-semibold text-bone shadow-[var(--shadow-rest)] ring-1 ring-bone/10 backdrop-blur-md"
             >
               <motion.span
                 aria-hidden
@@ -152,7 +154,8 @@ export default function Hero() {
                 transition={{ duration: 0.8, delay: 1, ease }}
                 className="h-[3px] w-7 origin-left rounded-full bg-lane"
               />
-              Renta mensual en Bogotá, Medellín, Bucaramanga y Cali
+              <span className="sm:hidden">Bogotá · Medellín · Bucaramanga · Cali</span>
+              <span className="hidden sm:inline">Renta mensual en Bogotá, Medellín, Bucaramanga y Cali</span>
             </motion.p>
             <h1 className="mt-5 font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_24px_rgba(10,10,8,.55)]">
               <SpeedWords text="Camionetas, pick-ups y SUV" delay={1.05} />
