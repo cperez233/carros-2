@@ -122,9 +122,9 @@ export default function Clients() {
                     <motion.li
                       key={p}
                       variants={staggerChild}
-                      className="flex gap-3 border-t border-bone/10 py-3 text-[15px] leading-[1.55] text-bone/85"
+                      className="group flex gap-3 border-t border-bone/10 py-3 text-[15px] leading-[1.55] text-bone/85 transition-colors hover:text-bone"
                     >
-                      <span aria-hidden className="mt-[9px] h-[3px] w-3 shrink-0 bg-lane" />
+                      <span aria-hidden className="mt-[9px] h-[3px] w-3 shrink-0 origin-left bg-lane transition-transform duration-300 group-hover:scale-x-[1.8]" />
                       {p}
                     </motion.li>
                   ))}

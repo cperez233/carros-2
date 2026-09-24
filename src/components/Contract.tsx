@@ -64,7 +64,7 @@ export default function Contract() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.8, ease, delay: i * 0.12 }}
-                className="grid grid-cols-[68px_1fr] gap-x-4 lg:block"
+                className="group grid grid-cols-[68px_1fr] gap-x-4 lg:block"
               >
                 <motion.span
                   initial={{ scale: 0.4, opacity: 0 }}
@@ -74,13 +74,13 @@ export default function Contract() {
                   aria-hidden
                   className="relative z-10 flex h-[68px] w-[68px] items-center justify-center lg:ml-10"
                 >
-                  <span className="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-lane shadow-[0_0_0_7px_var(--color-asphalt)]">
+                  <span className="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-lane shadow-[0_0_0_7px_var(--color-asphalt)] transition-transform duration-500 group-hover:scale-125">
                     <span className="h-2 w-2 rounded-full bg-asphalt" />
                   </span>
                 </motion.span>
                 <div className="pt-4 lg:pt-6">
-                  <h3 className="font-display text-[34px] font-semibold leading-none tracking-tight">{s.title}</h3>
-                  <p className="mt-3 max-w-sm text-[15px] leading-[1.65] text-bone/70">{s.body}</p>
+                  <h3 className="font-display text-[34px] font-semibold leading-none tracking-tight transition-colors duration-300 group-hover:text-lane">{s.title}</h3>
+                  <p className="mt-3 max-w-sm text-[15px] leading-[1.65] text-bone/70 transition-colors duration-300 group-hover:text-bone/90">{s.body}</p>
                 </div>
               </motion.li>
             ))}

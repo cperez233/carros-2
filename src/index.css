@@ -64,6 +64,15 @@
   background-image: repeating-linear-gradient(180deg, var(--color-lane) 0 22px, transparent 22px 40px);
 }
 
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 38s linear infinite;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -74,5 +83,8 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .marquee {
+    animation: none;
   }
 }

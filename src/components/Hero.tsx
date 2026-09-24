@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { CITIES, IMAGES, waLink } from "../data";
-import { Button, ease, SplitWords, spring } from "./motion";
+import { Button, ease, SplitWords, spring, Tilt } from "./motion";
 
 const ROWS: { label: string; on: boolean }[] = [
   { label: "Seguro todo riesgo", on: true },
@@ -50,7 +50,7 @@ function TariffPanel() {
         {ROWS.map((r, i) => (
           <li
             key={r.label}
-            className={`flex items-center justify-between gap-4 border-t border-bone/10 py-3 ${r.on ? "" : "text-stone-dark"}`}
+            className={`group flex items-center justify-between gap-4 border-t border-bone/10 py-3 transition-[padding] duration-300 hover:pl-1.5 ${r.on ? "" : "text-stone-dark"}`}
           >
             <span className={`text-[16px] ${r.on ? "font-medium text-bone" : ""}`}>
               {r.label}
@@ -137,9 +137,9 @@ export default function Hero() {
       {/* El panel se monta sobre el borde inferior de la foto */}
       <div className="relative z-10 -mt-14 px-4 sm:px-8 lg:-mt-44">
         <div className="mx-auto max-w-[560px] lg:max-w-[1320px] lg:grid lg:grid-cols-12">
-          <div className="lg:col-span-5 lg:col-start-8 lg:pl-6">
+          <Tilt max={5} className="lg:col-span-5 lg:col-start-8 lg:pl-6">
             <TariffPanel />
-          </div>
+          </Tilt>
         </div>
       </div>
 
@@ -149,34 +149,33 @@ export default function Hero() {
 }
 
 function CityStrip() {
+  const items = [...CITIES, ...CITIES, ...CITIES];
   return (
-    <div className="mx-auto max-w-[1320px] px-4 pb-4 pt-14 sm:px-8 lg:pt-10">
-      <motion.div
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-40px" }}
-        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.09 } } }}
-        className="flex flex-col gap-4 border-y border-bone/10 py-6 sm:flex-row sm:items-center sm:gap-8"
-      >
-        <motion.p
-          variants={{ hidden: { opacity: 0 }, show: { opacity: 1 } }}
-          className="shrink-0 text-[14px] font-medium text-stone"
-        >
-          Entregamos en
-        </motion.p>
-        <ul className="grid grid-cols-2 gap-x-6 gap-y-2 sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          {CITIES.map((c, i) => (
-            <motion.li
-              key={c}
-              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } }}
-              className="flex items-center gap-5 font-display text-[30px] font-semibold leading-none tracking-tight sm:text-[38px]"
-            >
-              {c}
-              {i < CITIES.length - 1 && <span aria-hidden className="lane-dash-x hidden h-[3px] w-16 opacity-80 lg:block xl:w-24" />}
-            </motion.li>
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 1, ease }}
+      className="mt-14 border-y border-bone/10 py-6 lg:mt-12"
+    >
+      <p className="mx-auto mb-4 max-w-[1320px] px-4 text-[14px] font-medium text-stone sm:px-8">Entregamos en</p>
+      <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+        <div className="marquee flex w-max items-center group-hover:[animation-play-state:paused]">
+          {[0, 1].map((copy) => (
+            <ul key={copy} aria-hidden={copy === 1} className="flex items-center">
+              {items.map((c, i) => (
+                <li
+                  key={`${c}-${i}`}
+                  className="flex items-center font-display text-[40px] font-semibold leading-none tracking-tight text-bone/90 transition-colors duration-300 hover:text-lane sm:text-[56px]"
+                >
+                  <span className="px-6 sm:px-8">{c}</span>
+                  <span aria-hidden className="lane-dash-x h-[4px] w-20 opacity-70 sm:w-28" />
+                </li>
+              ))}
+            </ul>
           ))}
-        </ul>
-      </motion.div>
-    </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
