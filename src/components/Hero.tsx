@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { CITIES, IMAGES, waLink } from "../data";
-import { Button, ease, SplitWords, spring, Tilt } from "./motion";
+import { Button, ease, spring, Tilt } from "./motion";
 
 const ROWS: { label: string; on: boolean }[] = [
   { label: "Seguro todo riesgo", on: true },
@@ -39,7 +39,7 @@ function TariffPanel() {
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease, delay: 0.9 }}
+      transition={{ duration: 1, ease, delay: 1.7 }}
       className="relative w-full rounded-[22px] bg-tarmac/80 p-5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl sm:p-6"
     >
       <div className="flex items-baseline justify-between gap-4">
@@ -56,7 +56,7 @@ function TariffPanel() {
               {r.label}
               <span className="sr-only">{r.on ? ": incluido" : ": no incluido"}</span>
             </span>
-            <Toggle on={r.on} delay={1.5 + i * 0.22} />
+            <Toggle on={r.on} delay={2.3 + i * 0.22} />
           </li>
         ))}
       </ul>
@@ -67,62 +67,111 @@ function TariffPanel() {
   );
 }
 
+/** Palabras que entran rápido desde la derecha con desenfoque, como un carro que pasa. */
+function SpeedWords({ text, delay = 0, className = "" }: { text: string; delay?: number; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((w, i) => (
+        <motion.span
+          key={`${w}-${i}`}
+          initial={{ opacity: 0, x: 90, filter: "blur(14px)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, delay: delay + i * 0.07, ease }}
+          className={`inline-block ${className}`}
+        >
+          {w}
+          {i < words.length - 1 ? "\u00a0" : ""}
+        </motion.span>
+      ))}
+    </>
+  );
+}
+
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], [0, 70]);
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1.04, 1.12]);
+  // Al bajar, la foto se recoge en un marco redondeado y el texto sube más rápido que ella
+  const frame = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    ["inset(0% 0% 0% 0% round 0px)", "inset(4% 3% 0% 3% round 32px)"]
+  );
+  const imgY = useTransform(scrollYProgress, [0, 1], [0, 90]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.16]);
+  const textY = useTransform(scrollYProgress, [0, 0.6], [0, -110]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
 
   return (
     <section id="inicio" ref={ref} className="relative">
       {/* Foto + titular */}
-      <div className="relative flex min-h-[640px] items-end overflow-hidden pb-24 pt-32 sm:min-h-[720px] lg:min-h-[100svh] lg:pb-40">
-        <motion.div
-          initial={{ opacity: 0, scale: 1.12 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.8, ease }}
-          className="absolute inset-0"
-        >
-          <motion.img
-            src={IMAGES.hero}
-            alt="Toyota Hilux gris doble cabina estacionada en un camino de tierra al atardecer"
-            style={{ y: imgY, scale: imgScale }}
-            className="h-full w-full object-cover object-[62%_70%] lg:object-[50%_68%]"
-          />
+      <div className="relative flex min-h-[100svh] items-end overflow-hidden pb-20 pt-32 sm:min-h-[760px] sm:pb-28 lg:min-h-[100svh] lg:pb-44">
+        <motion.div style={{ clipPath: frame }} className="absolute inset-0">
+          {/* Entrada: la foto se abre desde una franja, como un parabrisas */}
+          <motion.div
+            initial={{ clipPath: "inset(46% 0% 46% 0%)" }}
+            animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+            transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
+            className="absolute inset-0"
+          >
+            <motion.div
+              initial={{ scale: 1.25 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 2.2, ease }}
+              className="absolute inset-0"
+            >
+              <motion.img
+                src={IMAGES.hero}
+                alt="Pick-up doble cabina levantando polvo en una carretera destapada"
+                style={{ y: imgY, scale: imgScale }}
+                className="absolute inset-x-0 -top-[24%] h-[124%] w-full object-cover object-[64%_50%] sm:top-0 sm:h-full lg:object-[50%_56%]"
+              />
+            </motion.div>
+            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/45 to-asphalt/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/50 to-transparent lg:hidden" />
+            <div className="absolute inset-0 bg-gradient-to-r from-asphalt/85 via-asphalt/35 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-asphalt/70 to-transparent" />
+          </motion.div>
         </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/30 to-asphalt/40" />
-        <div className="absolute inset-0 bg-asphalt/35 lg:hidden" />
-        <div className="absolute inset-0 bg-gradient-to-r from-asphalt/75 via-asphalt/10 to-transparent" />
 
-        <div className="relative mx-auto grid w-full max-w-[1320px] items-end gap-10 px-4 sm:px-8 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+        <motion.div
+          style={{ y: textY, opacity: textOpacity }}
+          className="relative mx-auto grid w-full max-w-[1320px] items-end gap-10 px-4 sm:px-8 lg:grid-cols-12"
+        >
+          <div className="lg:col-span-8">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease }}
-              className="flex items-center gap-2.5 text-[14px] font-medium text-bone/80"
+              transition={{ duration: 0.8, delay: 0.9, ease }}
+              className="inline-flex items-center gap-2.5 rounded-[12px] bg-asphalt/70 py-2 pl-3 pr-4 sm:rounded-full text-[14px] font-semibold text-bone shadow-[var(--shadow-rest)] ring-1 ring-bone/10 backdrop-blur-md"
             >
-              <span aria-hidden className="h-[2px] w-5 bg-lane" />
-              Renta mensual de vehículos
+              <motion.span
+                aria-hidden
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 1, ease }}
+                className="h-[3px] w-7 origin-left rounded-full bg-lane"
+              />
+              Renta mensual en Bogotá, Medellín, Bucaramanga y Cali
             </motion.p>
-            <h1 className="mt-5 font-display text-[clamp(2.75rem,6.4vw,5.9rem)] font-semibold leading-[0.92] tracking-[-0.01em]">
-              <SplitWords text="Camionetas, pick-ups y SUV" animateNow delay={0.35} />
+            <h1 className="mt-5 font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_24px_rgba(10,10,8,.55)]">
+              <SpeedWords text="Camionetas, pick-ups y SUV" delay={1.05} />
               <br />
-              <SplitWords text="en renta mensual" className="text-bone/55" animateNow delay={0.6} />
+              <SpeedWords text="por mes" className="text-lane" delay={1.35} />
             </h1>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 1.05, ease }}
-              className="mt-6 max-w-[34rem] text-[16px] leading-[1.65] text-bone/80 sm:text-[17px]"
+              transition={{ duration: 0.9, delay: 1.6, ease }}
+              className="mt-6 hidden max-w-[34rem] text-[17px] font-medium leading-[1.65] text-bone [text-shadow:0_1px_12px_rgba(10,10,8,.8)] sm:block"
             >
-              Para empresas y particulares en Bogotá, Medellín, Bucaramanga y Cali. Una tarifa fija cada mes con seguro todo riesgo,
-              mantenimiento, SOAT e impuestos. Sin permanencia: el contrato es mes a mes.
+              Para empresas y particulares. Una tarifa fija cada mes con seguro todo riesgo, mantenimiento, SOAT e impuestos. Sin
+              permanencia: el contrato es mes a mes.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 1.2, ease }}
+              transition={{ duration: 0.9, delay: 1.75, ease }}
               className="mt-8 flex flex-wrap gap-3"
             >
               <Button href="#flota">Ver flota y tarifas</Button>
@@ -131,7 +180,7 @@ export default function Hero() {
               </Button>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* El panel se monta sobre el borde inferior de la foto */}

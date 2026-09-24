@@ -1,5 +1,5 @@
 import { CITIES, EMAIL, PHONE } from "../data";
-import { LINKS, Logo } from "./Nav";
+import { isInventoryPath, LINKS, linkHref, Logo } from "./Nav";
 
 export function Footer() {
   return (
@@ -13,9 +13,9 @@ export function Footer() {
         </div>
         <nav aria-label="Pie de página" className="md:col-span-3">
           <ul className="grid gap-2 text-[14px]">
-            {[...LINKS, { id: "contacto", label: "Cotizar" }].map((l) => (
+            {[...LINKS, { id: "contacto", label: "Cotizar", href: "/#contacto" }].map((l) => (
               <li key={l.id}>
-                <a href={`#${l.id}`} className="relative text-bone/80 transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-lane after:transition-transform after:duration-300 hover:text-bone hover:after:scale-x-100">
+                <a href={linkHref(l.href, isInventoryPath() ? "inventario" : "home")} className="relative text-bone/80 transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-lane after:transition-transform after:duration-300 hover:text-bone hover:after:scale-x-100">
                   {l.label}
                 </a>
               </li>

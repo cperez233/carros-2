@@ -1,10 +1,9 @@
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { Minus, Plus } from "lucide-react";
+import { Car, CarFront, CircleHelp, Minus, Plus, Truck, type LucideIcon } from "lucide-react";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
-import { CITIES, EMAIL, IMAGES, PHONE, waLink, type City } from "../data";
+import { CITIES, EMAIL, IMAGES, PHONE, VEHICLE_TYPES, waLink, type City, type VehicleTypeId } from "../data";
 import { Button, ease, Eyebrow, SplitWords, softSpring } from "./motion";
 
-type Kind = "Pick-up" | "SUV" | "Aún no sé";
 type Who = "Empresa" | "Particular";
 
 function Chips<T extends string>({
@@ -49,46 +48,161 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+const TYPE_ICONS: Record<VehicleTypeId, LucideIcon> = { auto: Car, suv: CarFront, pickup: Truck, nose: CircleHelp };
+
+function VehiclePicker({
+  type,
+  model,
+  onType,
+  onModel,
+}: {
+  type: VehicleTypeId;
+  model: string;
+  onType: (t: VehicleTypeId) => void;
+  onModel: (m: string) => void;
+}) {
+  const current = VEHICLE_TYPES.find((t) => t.id === type)!;
+  return (
+    <div>
+      <div role="radiogroup" aria-label="Tipo de vehículo" className="grid grid-cols-2 gap-2">
+        {VEHICLE_TYPES.map((t) => {
+          const Icon = TYPE_ICONS[t.id];
+          const on = t.id === type;
+          return (
+            <motion.button
+              type="button"
+              role="radio"
+              aria-checked={on}
+              key={t.id}
+              onClick={() => {
+                onType(t.id);
+                onModel("");
+              }}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              transition={softSpring}
+              className={`group relative flex items-center gap-3 rounded-[14px] p-3 text-left ring-1 transition-colors duration-300 ${
+                on ? "text-asphalt ring-transparent" : "text-bone/80 ring-bone/15 hover:ring-bone/40"
+              }`}
+            >
+              {on && <motion.span layoutId="type-card" transition={softSpring} className="absolute inset-0 rounded-[14px] bg-lane" />}
+              <span
+                className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-colors duration-300 ${
+                  on ? "bg-asphalt text-lane" : "bg-asphalt text-bone/70"
+                }`}
+              >
+                <Icon aria-hidden className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+              </span>
+              <span className="relative min-w-0">
+                <span className="block text-[15px] font-semibold leading-tight">{t.label}</span>
+                <span className={`hidden truncate text-[12px] sm:block ${on ? "text-asphalt/70" : "text-stone"}`}>{t.hint}</span>
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* Alto fijo: el formulario no salta al cambiar de tipo */}
+      <div className="relative mt-3 h-[112px] overflow-hidden rounded-[14px] bg-asphalt/70 p-3 ring-1 ring-bone/[0.06] sm:h-[64px]">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={type}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -14 }}
+            transition={{ duration: 0.25, ease }}
+            className="h-full"
+          >
+            {current.models.length > 0 ? (
+              <div role="radiogroup" aria-label="Modelo (opcional)" className="grid h-full grid-cols-2 gap-2 sm:grid-cols-4">
+                {current.models.map((m) => {
+                  const on = m === model;
+                  return (
+                    <motion.button
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      key={m}
+                      onClick={() => onModel(on ? "" : m)}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative truncate rounded-[10px] px-2 text-[13px] font-medium transition-colors duration-300 ${
+                        on ? "text-asphalt" : "text-bone/75 hover:bg-bone/5 hover:text-bone"
+                      }`}
+                    >
+                      {on && <motion.span layoutId="model-pill" transition={softSpring} className="absolute inset-0 rounded-[10px] bg-bone" />}
+                      <span className="relative">{m}</span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="flex h-full items-center justify-center px-3 text-center text-[14px] text-bone/75">
+                Cuéntanos para qué lo necesitas y te recomendamos el vehículo.
+              </p>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <p className="mt-2 text-[12px] text-stone">Modelo opcional. Si no eliges uno, cotizamos el tipo con la opción disponible.</p>
+    </div>
+  );
+}
+
 function Counter({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  // 1 = subió (el número nuevo entra desde abajo y el viejo sale por arriba), -1 = bajó
+  const [dir, setDir] = useState(1);
+  const set = (n: number) => {
+    setDir(n > value ? 1 : -1);
+    onChange(n);
+  };
   return (
     <div className="inline-flex items-center rounded-[10px] ring-1 ring-bone/15">
-      <button
+      <motion.button
         type="button"
         aria-label="Menos vehículos"
-        onClick={() => onChange(Math.max(1, value - 1))}
+        onClick={() => set(Math.max(1, value - 1))}
+        whileTap={{ scale: 0.85 }}
         className="flex h-11 w-11 items-center justify-center rounded-l-[10px] hover:bg-bone/5 disabled:opacity-30"
         disabled={value <= 1}
       >
         <Minus className="h-4 w-4" />
-      </button>
+      </motion.button>
       <span className="relative flex h-11 w-14 items-center justify-center overflow-hidden font-display text-[24px] font-semibold" aria-live="polite">
-        <AnimatePresence mode="popLayout" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false} custom={dir}>
           <motion.span
             key={value}
-            initial={{ y: 22, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -22, opacity: 0 }}
-            transition={{ duration: 0.25, ease }}
+            custom={dir}
+            variants={{
+              enter: (d: number) => ({ y: d * 24, opacity: 0 }),
+              center: { y: 0, opacity: 1 },
+              exit: (d: number) => ({ y: d * -24, opacity: 0 }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.28, ease }}
           >
             {value}
           </motion.span>
         </AnimatePresence>
       </span>
-      <button
+      <motion.button
         type="button"
         aria-label="Más vehículos"
-        onClick={() => onChange(Math.min(50, value + 1))}
+        onClick={() => set(Math.min(50, value + 1))}
+        whileTap={{ scale: 0.85 }}
         className="flex h-11 w-11 items-center justify-center rounded-r-[10px] hover:bg-bone/5"
       >
         <Plus className="h-4 w-4" />
-      </button>
+      </motion.button>
     </div>
   );
 }
 
 export default function Contact() {
   const [city, setCity] = useState<City>("Bogotá");
-  const [kind, setKind] = useState<Kind>("Pick-up");
+  const [type, setType] = useState<VehicleTypeId>("suv");
+  const [model, setModel] = useState("");
   const [who, setWho] = useState<Who>("Empresa");
   const [qty, setQty] = useState(1);
   const [name, setName] = useState("");
@@ -97,7 +211,9 @@ export default function Contact() {
   const bgY = useTransform(scrollYProgress, [0, 1], [-60, 60]);
 
   const message =
-    `Hola, soy ${name.trim() || "[nombre]"}. Quiero cotizar la renta mensual de ${qty} ${kind === "Aún no sé" ? "vehículo(s)" : kind}` +
+    `Hola, soy ${name.trim() || "[nombre]"}. Quiero cotizar la renta mensual de ${qty} ${
+      model ? `${model} (o similar)` : type === "nose" ? "vehículo(s), aún no sé cuál" : VEHICLE_TYPES.find((t) => t.id === type)!.label
+    }` +
     ` en ${city}, para ${who === "Empresa" ? "mi empresa" : "uso personal"}.`;
 
   const submit = (e: FormEvent) => {
@@ -179,7 +295,7 @@ export default function Contact() {
               <Chips name="ciudad" options={CITIES} value={city} onChange={setCity} />
             </Field>
             <Field label="Tipo de vehículo">
-              <Chips name="tipo" options={["Pick-up", "SUV", "Aún no sé"] as const} value={kind} onChange={setKind} />
+              <VehiclePicker type={type} model={model} onType={setType} onModel={setModel} />
             </Field>
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Es para">
@@ -191,9 +307,20 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="mt-7 rounded-[14px] bg-asphalt/70 p-4">
-            <p className="text-[12px] font-medium text-stone">Mensaje que se enviará</p>
-            <p className="mt-1.5 text-[14px] leading-[1.55] text-bone/85">{message}</p>
+          <div className="mt-7 rounded-[16px] bg-asphalt/70 p-4">
+            <p className="text-[12px] font-medium text-stone">Así llega tu mensaje por WhatsApp</p>
+            <div className="mt-3 flex justify-end">
+              <motion.div
+                layout
+                transition={{ layout: { duration: 0.3, ease } }}
+                className="relative max-w-[92%] rounded-[16px] rounded-br-[4px] bg-lane/15 px-4 py-3 text-[14px] leading-[1.55] text-bone ring-1 ring-lane/30"
+              >
+                <motion.p layout="position">{message}</motion.p>
+                <motion.p layout="position" className="mt-1 text-right text-[11px] text-lane">
+                  ahora ✓✓
+                </motion.p>
+              </motion.div>
+            </div>
           </div>
 
           <Button type="submit" className="mt-5 w-full sm:w-auto">

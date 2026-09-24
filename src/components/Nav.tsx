@@ -8,21 +8,27 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { Building2, CarFront, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Building2, CarFront, LayoutGrid, MessageCircle, Phone, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PHONE } from "../data";
 import { ease, softSpring, spring, useCanHover } from "./motion";
 
-export const LINKS: { id: string; label: string; icon: LucideIcon }[] = [
-  { id: "flota", label: "Flota", icon: CarFront },
-  { id: "incluye", label: "Incluye", icon: ShieldCheck },
-  { id: "contrato", label: "Contrato", icon: Route },
-  { id: "clientes", label: "Empresas", icon: Building2 },
+export type Page = "home" | "inventario";
+export const isInventoryPath = () => typeof window !== "undefined" && window.location.pathname.startsWith("/inventario");
+
+export const LINKS: { id: string; label: string; icon: LucideIcon; href: string }[] = [
+  { id: "flota", label: "Flota", icon: CarFront, href: "/#flota" },
+  { id: "inventario", label: "Inventario", icon: LayoutGrid, href: "/inventario" },
+  { id: "incluye", label: "Incluye", icon: ShieldCheck, href: "/#incluye" },
+  { id: "clientes", label: "Empresas", icon: Building2, href: "/#clientes" },
 ];
+
+/** En la página de inicio los enlaces a secciones son anclas locales; desde otra página vuelven al inicio. */
+export const linkHref = (href: string, page: Page) => (page === "home" && href.startsWith("/#") ? href.slice(1) : href);
 
 export function Logo({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
   return (
-    <a href="#inicio" className={`group flex items-center gap-2.5 ${className}`} aria-label="Trocha, inicio">
+    <a href={isInventoryPath() ? "/" : "#inicio"} className={`group flex items-center gap-2.5 ${className}`} aria-label="Trocha, inicio">
       <motion.span
         aria-hidden
         whileHover={{ rotate: -8 }}
@@ -49,9 +55,10 @@ export function Logo({ compact = false, className = "" }: { compact?: boolean; c
   );
 }
 
-function useActiveSection() {
-  const [active, setActive] = useState("inicio");
+function useActiveSection(page: Page) {
+  const [active, setActive] = useState(page === "inventario" ? "inventario" : "inicio");
   useEffect(() => {
+    if (page !== "home") return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
       { rootMargin: "-45% 0px -50% 0px" }
@@ -61,7 +68,7 @@ function useActiveSection() {
       if (el) io.observe(el);
     });
     return () => io.disconnect();
-  }, []);
+  }, [page]);
   return active;
 }
 
@@ -88,8 +95,8 @@ function Corners() {
         <motion.div
           layout
           transition={spring}
-          className={`pointer-events-auto rounded-[14px] p-1.5 pr-3 transition-colors duration-500 ${
-            compact ? "bg-tarmac/90 pr-1.5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-md" : ""
+          className={`pointer-events-auto rounded-[14px] bg-tarmac/85 p-1.5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-md ${
+            compact ? "" : "pr-3.5"
           }`}
         >
           <Logo compact={compact} />
@@ -110,14 +117,14 @@ function Corners() {
 }
 
 function DockItem({
-  id,
+  href,
   label,
   Icon,
   active,
   mouseX,
   magnify,
 }: {
-  id: string;
+  href: string;
   label: string;
   Icon: LucideIcon;
   active: boolean;
@@ -135,11 +142,11 @@ function DockItem({
   return (
     <motion.a
       ref={ref}
-      href={`#${id}`}
+      href={href}
       style={{ scale, y: lift }}
       whileTap={{ scale: 0.9 }}
       aria-current={active ? "true" : undefined}
-      className={`relative flex h-[52px] min-w-[54px] flex-col items-center justify-center gap-1 rounded-[14px] px-2 transition-colors duration-300 sm:min-w-[74px] ${
+      className={`relative flex h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 rounded-[14px] px-1.5 sm:px-2 transition-colors duration-300 sm:min-w-[74px] ${
         active ? "text-asphalt" : "text-stone hover:text-bone"
       }`}
     >
@@ -151,14 +158,17 @@ function DockItem({
 }
 
 /** Dock flotante abajo: navegación y cotizar siempre a un toque. */
-function Dock() {
-  const active = useActiveSection();
+function Dock({ page }: { page: Page }) {
+  const active = useActiveSection(page);
   const mouseX = useMotionValue(Infinity);
   const magnify = useCanHover();
   // Aparece al empezar a bajar, para no tapar el hero en la primera pantalla
   const { scrollY } = useScroll();
   const [shown, setShown] = useState(false);
-  useMotionValueEvent(scrollY, "change", (v) => setShown(v > 160));
+  useMotionValueEvent(scrollY, "change", (v) => setShown(page !== "home" || v > 160));
+  useEffect(() => {
+    if (page !== "home") setShown(true);
+  }, [page]);
 
   return (
     <motion.nav
@@ -174,11 +184,11 @@ function Dock() {
         className="flex items-end gap-0.5 rounded-[20px] bg-tarmac/90 p-1.5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl"
       >
         {LINKS.map((l) => (
-          <DockItem key={l.id} id={l.id} label={l.label} Icon={l.icon} active={active === l.id} mouseX={mouseX} magnify={magnify} />
+          <DockItem key={l.id} href={linkHref(l.href, page)} label={l.label} Icon={l.icon} active={active === l.id} mouseX={mouseX} magnify={magnify} />
         ))}
         <span aria-hidden className="mx-1 mb-3 hidden h-7 w-px self-end bg-bone/10 sm:block" />
         <motion.a
-          href="#contacto"
+          href={linkHref("/#contacto", page)}
           whileHover={{ y: -3 }}
           whileTap={{ scale: 0.92 }}
           transition={softSpring}
@@ -193,11 +203,11 @@ function Dock() {
   );
 }
 
-export default function Nav() {
+export default function Nav({ page = "home" }: { page?: Page }) {
   return (
     <>
       <Corners />
-      <Dock />
+      <Dock page={page} />
     </>
   );
 }

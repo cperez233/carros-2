@@ -45,6 +45,40 @@ export default function Fleet() {
     return () => clearTimeout(t);
   }, [autoplay, index, activeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Celular: la fila de nombres es un carrusel centrado sincronizado con la foto
+  const rowRef = useRef<HTMLUListElement>(null);
+  const programmatic = useRef(0);
+  const settle = useRef<ReturnType<typeof setTimeout>>();
+  const isRow = () => typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches;
+
+  useEffect(() => {
+    const row = rowRef.current;
+    if (!row || !isRow()) return;
+    const chip = row.querySelector<HTMLElement>(`[data-id="${v.id}"]`);
+    if (!chip) return;
+    programmatic.current = Date.now();
+    row.scrollTo({ left: chip.offsetLeft + chip.offsetWidth / 2 - row.clientWidth / 2, behavior: "smooth" });
+  }, [v.id]);
+
+  const onRowScroll = () => {
+    const row = rowRef.current;
+    if (!row || !isRow() || Date.now() - programmatic.current < 700) return;
+    clearTimeout(settle.current);
+    settle.current = setTimeout(() => {
+      const center = row.scrollLeft + row.clientWidth / 2;
+      let best = 0;
+      let dist = Infinity;
+      row.querySelectorAll<HTMLElement>("[data-id]").forEach((el, i) => {
+        const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - center);
+        if (d < dist) {
+          dist = d;
+          best = i;
+        }
+      });
+      if (list[best] && list[best].id !== v.id) go(best);
+    }, 90);
+  };
+
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -60) go(index + 1);
     else if (info.offset.x > 60) go(index - 1);
@@ -200,14 +234,22 @@ export default function Fleet() {
           {/* Lista de modelos + ficha */}
           <div className="lg:col-span-5">
             <ul
+              ref={rowRef}
+              onScroll={onRowScroll}
               role="listbox"
               aria-label="Vehículos"
-              className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto scroll-px-4 px-4 pb-2 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0"
+              className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-[calc(50%-100px)] pb-2 sm:-mx-8 lg:mx-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0"
             >
               {list.map((x, i) => {
                 const on = x.id === v.id;
                 return (
-                  <li key={x.id} className="shrink-0 snap-start lg:border-t lg:border-bone/10 lg:last:border-b">
+                  <li
+                    key={x.id}
+                    data-id={x.id}
+                    className={`shrink-0 snap-center transition-[opacity,transform] duration-500 lg:scale-100 lg:border-t lg:border-bone/10 lg:opacity-100 lg:last:border-b ${
+                      on ? "" : "scale-[0.92] opacity-55"
+                    }`}
+                  >
                     <motion.button
                       role="option"
                       aria-selected={on}
@@ -288,6 +330,26 @@ export default function Fleet() {
         >
           Las fotos son de referencia. El vehículo entregado puede ser de la misma línea en otro color o año.
         </motion.p>
+        <motion.a
+          href="/inventario"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease }}
+          className="group mt-8 flex items-center justify-between gap-6 rounded-[22px] bg-tarmac p-5 ring-1 ring-bone/[0.06] transition-colors duration-300 hover:bg-shoulder sm:p-7"
+        >
+          <span>
+            <span className="block font-display text-[30px] font-semibold leading-none tracking-tight sm:text-[40px]">
+              Ver el inventario completo
+            </span>
+            <span className="mt-2 block text-[14px] text-stone">
+              Unidades disponibles por ciudad, con año, kilometraje, caja y tarifa. También automóviles.
+            </span>
+          </span>
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-lane text-asphalt transition-transform duration-500 group-hover:-rotate-45 group-hover:scale-110">
+            <ChevronRight className="h-6 w-6" />
+          </span>
+        </motion.a>
       </div>
     </section>
   );

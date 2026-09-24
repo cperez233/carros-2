@@ -121,8 +121,17 @@ export const INCLUDED = [
 export const NOT_INCLUDED = ["Combustible", "Peajes y parqueaderos", "Multas de tránsito"];
 
 export const IMAGES = {
-  hero: img("photo-1631377875413-b1e3e660bfa2", 2400),
+  hero: img("photo-1649280501271-1b51feaaafd3", 2400),
   empresas: img("photo-1605893477799-b99e3b8b93fe", 1800),
   particulares: img("photo-1670736297573-fde2cbcf1de7", 1800),
   valley: img("photo-1623167987947-c25a2cc06a21", 2400),
 };
+
+// Modelos comunes en Colombia para el formulario de cotización
+export const VEHICLE_TYPES = [
+  { id: "auto", label: "Automóvil", hint: "Ciudad y trayectos cortos", models: ["Kia Picanto", "Mazda 2", "Chevrolet Onix", "Renault Logan"] },
+  { id: "suv", label: "SUV", hint: "Familia, ciudad y carretera", models: ["Renault Duster", "Mazda CX-5", "Kia Sportage", "Toyota Fortuner"] },
+  { id: "pickup", label: "Pick-up", hint: "Obra, campo y carga", models: ["Toyota Hilux", "Ford Ranger", "Nissan Frontier", "Chevrolet Colorado"] },
+  { id: "nose", label: "Aún no sé", hint: "Te recomendamos uno", models: [] as string[] },
+] as const;
+export type VehicleTypeId = (typeof VEHICLE_TYPES)[number]["id"];
