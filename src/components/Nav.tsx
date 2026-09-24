@@ -164,14 +164,48 @@ function DockItem({
       style={{ scale, y: lift }}
       whileTap={{ scale: 0.9 }}
       aria-current={active ? "true" : undefined}
-      className={`relative flex h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 rounded-[14px] px-1.5 sm:px-2 transition-colors duration-300 sm:min-w-[74px] ${
+      className={`relative flex h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 rounded-[14px] pt-0.5 px-1.5 sm:px-2 transition-colors duration-300 sm:min-w-[74px] ${
         active ? "text-asphalt" : "text-stone hover:text-bone"
       }`}
     >
-      {active && <motion.span layoutId="dock-active" transition={spring} className="absolute inset-0 rounded-[14px] bg-bone" />}
-      <Icon aria-hidden className="relative h-[18px] w-[18px]" strokeWidth={2} />
-      <span className="relative text-[11px] font-semibold leading-none">{label}</span>
+      {active && <DockIndicator />}
+      <DockIcon Icon={Icon} active={active} />
+      <span className={`relative mb-1 text-[11px] leading-none transition-[font-weight] ${active ? "font-bold" : "font-semibold"}`}>{label}</span>
     </motion.a>
+  );
+}
+
+/** Indicador compartido: se desliza entre botones con un leve estiramiento y dibuja una línea de carril. */
+const indicatorSpring = { type: "spring" as const, stiffness: 420, damping: 30, mass: 0.9 };
+function DockIndicator() {
+  return (
+    <motion.span
+      layoutId="dock-active"
+      transition={indicatorSpring}
+      className="absolute inset-0 rounded-[14px] bg-bone shadow-[0_8px_18px_-8px_rgba(236,231,220,0.55),inset_0_-2px_0_rgba(19,21,20,0.08)]"
+    >
+      <motion.span
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: 1, opacity: 1 }}
+        transition={{ duration: 0.45, ease, delay: 0.12 }}
+        className="absolute inset-x-3 bottom-[5px] h-[3px] origin-left rounded-full bg-lane"
+      />
+    </motion.span>
+  );
+}
+
+/** Ícono que da un pequeño salto cuando su botón pasa a estar activo. */
+function DockIcon({ Icon, active, className = "" }: { Icon: LucideIcon; active: boolean; className?: string }) {
+  return (
+    <motion.span
+      key={active ? "on" : "off"}
+      initial={active ? { y: 0, scale: 1, rotate: 0 } : false}
+      animate={active ? { y: [0, -5, 0], scale: [1, 1.2, 1], rotate: [0, -8, 0] } : { y: 0, scale: 1, rotate: 0 }}
+      transition={{ duration: 0.5, ease }}
+      className={`relative flex ${className}`}
+    >
+      <Icon aria-hidden className="h-[18px] w-[18px]" strokeWidth={active ? 2.4 : 2} />
+    </motion.span>
   );
 }
 
@@ -212,10 +246,12 @@ function Dock({ page }: { page: Page }) {
           whileTap={{ scale: 0.92 }}
           transition={softSpring}
           aria-current={active === "contacto" ? "true" : undefined}
-          className="group relative flex h-[52px] items-center gap-2 overflow-hidden rounded-[14px] bg-lane px-3 text-[14px] sm:px-4 font-semibold text-asphalt shadow-[var(--shadow-rest)]"
+          className="group relative flex h-[52px] items-center gap-2 rounded-[14px] bg-lane px-3 text-[14px] font-semibold text-asphalt shadow-[var(--shadow-rest)] sm:px-4"
         >
-          <MessageCircle aria-hidden className="h-[18px] w-[18px] transition-transform duration-300 group-hover:-rotate-12" />
-          Cotizar
+          {/* En la sección de cotizar, el indicador blanco también llega aquí */}
+          {active === "contacto" && <DockIndicator />}
+          <DockIcon Icon={MessageCircle} active={active === "contacto"} className="transition-transform duration-300 group-hover:-rotate-12" />
+          <span className="relative">Cotizar</span>
         </motion.a>
       </div>
       </div>
