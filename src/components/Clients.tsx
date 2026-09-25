@@ -66,6 +66,8 @@ export default function Clients() {
             <motion.img
               key={kind}
               src={c.image}
+              width={1800}
+              height={1350}
               alt={c.alt}
               loading="lazy"
               initial={{ opacity: 0, scale: 1.08 }}

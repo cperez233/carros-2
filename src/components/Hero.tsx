@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { CITIES, IMAGES, waLink } from "../data";
+import { CITIES, IMAGES, REGION, waLink } from "../data";
 import { Button, ease, spring, Tilt } from "./motion";
 
 const ROWS: { label: string; on: boolean }[] = [
@@ -124,6 +124,9 @@ export default function Hero() {
             >
               <motion.img
                 src={IMAGES.hero}
+                width={2400}
+                height={1600}
+                {...{ fetchpriority: "high" }} // React 18 solo lo pasa al HTML en minúscula
                 alt="Pick-up doble cabina levantando polvo en una carretera destapada"
                 style={{ y: imgY, scale: imgScale }}
                 className="absolute -left-[52%] -top-[35%] h-[137%] w-[192%] max-w-none object-cover object-center sm:-left-[10%] sm:-top-[22%] sm:h-[122%] sm:w-[120%] lg:left-0 lg:top-0 lg:h-full lg:w-full lg:object-[50%_56%]"
@@ -145,7 +148,18 @@ export default function Hero() {
         >
           <div className="lg:col-span-8">
             <h1 className="font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_18px_rgba(10,10,8,.7),0_0_48px_rgba(10,10,8,.45)]">
-              <SpeedWords text="Camionetas, pick-ups y SUV" delay={1.05} />
+              {/* La ubicación va dentro del H1 para que buscadores lean qué, para quién y dónde */}
+              <motion.span
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.9, ease }}
+                className="mb-4 flex items-center gap-2.5 font-sans text-[14px] font-semibold normal-case leading-none tracking-normal text-bone/85 sm:text-[15px]"
+              >
+                <span aria-hidden className="h-[2px] w-5 bg-lane" />
+                Renta de camionetas en {CITIES[0]} y el {REGION}
+                <span className="sr-only">: </span>
+              </motion.span>
+              <SpeedWords text="Camionetas, pick-ups y SUV" delay={1.05} />{" "}
               <br />
               <SpeedWords text="por mes" className="text-lane" delay={1.35} />
             </h1>

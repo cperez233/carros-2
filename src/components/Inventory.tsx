@@ -72,6 +72,8 @@ function UnitCard({ u, onOpen }: { u: Unit; onOpen: () => void }) {
           <button onClick={onOpen} className="relative block aspect-[16/11] overflow-hidden rounded-t-[22px]" aria-label={`Ver ficha de ${u.model} ${u.year}`}>
             <img
               src={u.image}
+              width={1200}
+              height={825}
               alt={`${u.model} ${u.year}`}
               loading="lazy"
               style={{ objectPosition: u.position }}
@@ -200,6 +202,8 @@ function UnitSheet({ u, onClose }: { u: Unit; onClose: () => void }) {
         <div className="relative mx-3 overflow-hidden rounded-[20px] md:mt-3">
           <motion.img
             src={u.image}
+            width={1200}
+            height={825}
             alt={`${u.model} ${u.year}`}
             initial={{ scale: 1.12 }}
             animate={{ scale: 1 }}
@@ -295,9 +299,9 @@ export default function Inventory() {
       <div className="mx-auto max-w-[1320px] px-4 sm:px-8">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <Eyebrow>Inventario</Eyebrow>
+            <Eyebrow>Inventario · {CITIES[0]} y alrededores</Eyebrow>
             <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.6rem)] font-bold uppercase leading-[0.9] tracking-[-0.01em]">
-              <SplitWords text="Vehículos disponibles" animateNow delay={0.1} />
+              <SplitWords text="Camionetas disponibles" animateNow delay={0.1} />{" "}
               <br />
               <SplitWords text="para renta mensual" className="text-bone/45" animateNow delay={0.3} />
             </h1>
@@ -352,6 +356,7 @@ export default function Inventory() {
       </div>
 
       <div className="mx-auto mt-8 max-w-[1320px] px-4 sm:px-8">
+        <h2 className="sr-only">Listado de camionetas con tarifa mensual</h2>
         <motion.div layout className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence initial={false}>
             {list.map((u) => (

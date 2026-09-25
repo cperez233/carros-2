@@ -10,11 +10,12 @@ import {
 } from "framer-motion";
 import { ArrowLeft, Building2, CarFront, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { BRAND, COMPANY, PHONE } from "../data";
+import { BRAND, BRAND_TAGLINE, COMPANY, PHONE } from "../data";
+import { currentPath } from "../path";
 import { ease, softSpring, spring, useCanHover } from "./motion";
 
 export type Page = "home" | "inventario";
-export const isInventoryPath = () => typeof window !== "undefined" && window.location.pathname.startsWith("/inventario");
+export const isInventoryPath = () => currentPath().startsWith("/inventario");
 
 export const LINKS: { id: string; label: string; icon: LucideIcon; href: string }[] = [
   { id: "flota", label: "Inventario", icon: CarFront, href: "/#flota" },
@@ -66,7 +67,7 @@ export function Wordmark({ large = false }: { large?: boolean }) {
         }`}
       >
         <span aria-hidden className={`shrink-0 bg-lane ${large ? "h-[3px] w-5" : "h-[2px] w-2"}`} />
-        Service Quality
+        {BRAND_TAGLINE}
       </span>
     </span>
   );

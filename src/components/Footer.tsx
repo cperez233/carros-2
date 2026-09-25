@@ -1,4 +1,4 @@
-import { ADDRESS, COMPANY, EMAIL, PHONE } from "../data";
+import { ADDRESS_LABEL, COMPANY, EMAIL, NIT, PHONE } from "../data";
 import { isInventoryPath, LINKS, linkHref, Logo } from "./Nav";
 
 export function Footer() {
@@ -13,7 +13,7 @@ export function Footer() {
         </div>
         <nav aria-label="Pie de página" className="md:col-span-3">
           <ul className="grid gap-2 text-[14px]">
-            {[...LINKS, { id: "inventario", label: "Inventario", href: "/inventario" }, { id: "contacto", label: "Cotizar", href: "/#cotizar" }].map((l) => (
+            {[...LINKS, { id: "inventario", label: "Inventario", href: "/inventario" }, { id: "preguntas", label: "Preguntas frecuentes", href: "/#preguntas" }, { id: "contacto", label: "Cotizar", href: "/#cotizar" }].map((l) => (
               <li key={l.id}>
                 <a href={linkHref(l.href, isInventoryPath() ? "inventario" : "home")} className="relative text-bone/80 transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-lane after:transition-transform after:duration-300 hover:text-bone hover:after:scale-x-100">
                   {l.label}
@@ -25,8 +25,8 @@ export function Footer() {
         <div className="text-[14px] md:col-span-4">
           <p className="text-bone/80">{PHONE}</p>
           <p className="mt-2 text-bone/80">{EMAIL}</p>
-          <p className="mt-2 text-bone/80">{ADDRESS}</p>
-          <p className="mt-6 text-[13px] text-stone">© {new Date().getFullYear()} {COMPANY}. Tarifas sujetas a disponibilidad y estudio de documentos.</p>
+          <p className="mt-2 text-bone/80">{ADDRESS_LABEL}</p>
+          <p className="mt-6 text-[13px] text-stone">© {new Date().getFullYear()} {COMPANY}{NIT ? ` · NIT ${NIT}` : ""}. Tarifas sujetas a disponibilidad y estudio de documentos.</p>
         </div>
       </div>
     </footer>

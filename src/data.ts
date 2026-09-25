@@ -1,20 +1,13 @@
 export const img = (id: string, w = 1600) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
 
-// PROVISIONAL: número de WhatsApp y teléfono mientras se define el oficial
-export const WHATSAPP = "573232015887";
-export const PHONE = "+57 323 201 5887";
-export const EMAIL = "comercial@masterservicequality.co"; // PLACEHOLDER: confirmar correo real
-export const COMPANY = "Master Service Quality SAS";
-export const BRAND = "Master";
-export const ADDRESS = "Barrancabermeja, Santander";
+import { WHATSAPP } from "./site";
+
+// Los datos del negocio viven en site.ts
+export * from "./site";
 
 export const waLink = (text: string) =>
   `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
-
-// PLACEHOLDER: confirmar municipios donde entregan
-export const CITIES = ["Barrancabermeja", "Puerto Wilches", "Sabana de Torres", "Yondó"] as const;
-export type City = (typeof CITIES)[number];
 
 export type Category = "pickup" | "suv";
 

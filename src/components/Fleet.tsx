@@ -155,6 +155,8 @@ export default function Fleet() {
                   <motion.img
                     key={v.id}
                     src={v.image}
+                    width={1200}
+                    height={825}
                     alt={v.name}
                     custom={dir}
                     variants={{

@@ -1,7 +1,8 @@
 import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
 import { CarFront, CircleHelp, Minus, Plus, Truck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { CITIES, EMAIL, IMAGES, PHONE, VEHICLE_TYPES, waLink, type City, type VehicleTypeId } from "../data";
+import { trackLead } from "../analytics";
+import { ADDRESS_LABEL, CITIES, EMAIL, IMAGES, PHONE, HOURS, VEHICLE_TYPES, waLink, type City, type VehicleTypeId } from "../data";
 import { Button, ease, Eyebrow, SplitWords, softSpring } from "./motion";
 
 type Who = "Empresa" | "Persona natural";
@@ -240,6 +241,7 @@ export default function Contact() {
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
+    trackLead("formulario", `${qty} ${type} ${city}`);
     window.open(waLink(message), "_blank", "noopener,noreferrer");
   };
 
@@ -247,6 +249,8 @@ export default function Contact() {
     <section id="contacto" ref={ref} className="relative scroll-mt-20 overflow-hidden py-20 lg:py-32">
       <motion.img
         src={IMAGES.valley}
+        width={2400}
+        height={1600}
         alt=""
         aria-hidden
         loading="lazy"
@@ -273,7 +277,8 @@ export default function Contact() {
             {[
               ["Teléfono y WhatsApp", PHONE, `tel:${PHONE.replace(/\s/g, "")}`],
               ["Correo", EMAIL, `mailto:${EMAIL}`],
-              ["Horario", "Lunes a viernes, 8:00 a. m. a 6:00 p. m.", undefined],
+              ["Horario", HOURS.label, undefined],
+              ["Oficina", ADDRESS_LABEL, undefined],
             ].map(([k, v, href]) => (
               <div key={k} className="flex flex-col gap-1 border-t border-bone/10 py-4 sm:flex-row sm:justify-between">
                 <dt className="text-stone">{k}</dt>

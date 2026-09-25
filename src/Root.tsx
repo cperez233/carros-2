@@ -1,14 +1,16 @@
 import { motion, MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { trackLead } from "./analytics";
 import HomePage from "./App";
 import InventoryPage from "./InventoryPage";
 import Nav, { LogoMark, Wordmark, type Page } from "./components/Nav";
+import { currentPath } from "./path";
+import { PAGES } from "./seo";
 
 const pageOf = (pathname: string): Page => (pathname.startsWith("/inventario") ? "inventario" : "home");
-const TITLES: Record<Page, string> = {
-  home: "Master Service Quality · Renta de camionetas en Barrancabermeja",
-  inventario: "Inventario · Master Service Quality",
-};
+const TITLES: Record<Page, string> = { home: PAGES["/"].title, inventario: PAGES["/inventario"].title };
+// En el prerender no hay layout: useLayoutEffect solo en el navegador
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 const curtainEase = [0.76, 0, 0.24, 1] as [number, number, number, number];
 const CLOSE_MS = 550;
 const OPEN_MS = 750;
@@ -69,9 +71,9 @@ function Curtain({ phase }: { phase: Phase }) {
 }
 
 export default function Root() {
-  const [path, setPath] = useState(() => window.location.pathname);
+  const [path, setPath] = useState(currentPath);
   const [phase, setPhase] = useState<Phase>("idle");
-  const pendingHash = useRef(window.location.hash.slice(1));
+  const pendingHash = useRef(typeof window !== "undefined" ? window.location.hash.slice(1) : "");
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const page = pageOf(path);
 
@@ -82,7 +84,7 @@ export default function Root() {
   }, []);
 
   // Cada vez que cambia la página (tapada por el telón), se ubica el scroll
-  useLayoutEffect(() => {
+  useIsoLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
     const id = pendingHash.current;
     pendingHash.current = "";
@@ -122,9 +124,13 @@ export default function Root() {
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as HTMLElement).closest("a");
-      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
-      const href = a.getAttribute("href");
-      if (!href || href.startsWith("tel:") || href.startsWith("mailto:")) return;
+      const href = a?.getAttribute("href");
+      if (!a || !href) return;
+      // Conversiones: WhatsApp y llamadas
+      if (href.includes("wa.me/")) trackLead("whatsapp", a.textContent?.trim() ?? "");
+      else if (href.startsWith("tel:")) trackLead("telefono");
+      if (a.target === "_blank" || a.hasAttribute("download")) return;
+      if (href.startsWith("tel:") || href.startsWith("mailto:")) return;
       const url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return;
       e.preventDefault();
