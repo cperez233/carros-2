@@ -79,9 +79,10 @@ function Curtain({ phase }: { phase: Phase }) {
           <Wordmark large />
         </span>
         <motion.span
-          animate={{ scaleX: phase === "idle" ? 0 : 1 }}
+          initial={false}
+          animate={{ clipPath: phase === "idle" ? "inset(0 100% 0 0)" : "inset(0 0% 0 0)" }}
           transition={{ duration: 0.6, ease: curtainEase }}
-          className="lane-dash-x h-[4px] w-full origin-left"
+          className="lane-dash-x h-[4px] w-full"
         />
       </div>
     </motion.div>

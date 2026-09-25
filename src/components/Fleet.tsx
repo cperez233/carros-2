@@ -161,7 +161,7 @@ export default function Fleet() {
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.18}
               onDragEnd={onDragEnd}
-              className="relative aspect-[4/3] cursor-default touch-pan-y overflow-hidden rounded-[26px] bg-tarmac sm:aspect-[16/9] lg:aspect-[2/1]"
+              className="relative aspect-square cursor-default touch-pan-y overflow-hidden rounded-[26px] bg-tarmac sm:aspect-[16/9] lg:aspect-[2/1]"
             >
               <AnimatePresence initial={false} custom={dir}>
                 <motion.img
@@ -207,14 +207,14 @@ export default function Fleet() {
               <div className="pointer-events-none absolute inset-x-5 bottom-14 sm:inset-x-8 sm:bottom-20 lg:bottom-24 lg:left-10 lg:right-40">
                 <AnimatePresence mode="wait">
                   <motion.div key={v.id} exit={{ opacity: 0, x: -30, filter: "blur(8px)", transition: { duration: 0.25 } }}>
-                    <p className="font-display text-[clamp(2.1rem,7.4vw,6.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_18px_rgba(10,10,8,.6)]">
+                    <p className="font-display text-[clamp(2.7rem,7.4vw,6.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_18px_rgba(10,10,8,.6)]">
                       <SpeedWords text={v.name} delay={0.05} />
                     </p>
                     <motion.p
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, ease, delay: 0.35 }}
-                      className="mt-3 hidden text-[17px] font-medium text-bone/85 [text-shadow:0_1px_10px_rgba(10,10,8,.8)] sm:block"
+                      className="mt-4 hidden w-fit rounded-full bg-asphalt/65 px-4 py-2 text-[16px] font-semibold text-bone ring-1 ring-bone/10 backdrop-blur-md sm:block"
                     >
                       {v.use}
                     </motion.p>

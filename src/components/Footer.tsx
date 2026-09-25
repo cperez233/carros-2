@@ -44,11 +44,11 @@ export function Footer() {
       {/* Línea de carril que se dibuja al llegar al footer */}
       <motion.div
         aria-hidden
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
+        initial={{ clipPath: "inset(0 100% 0 0)" }}
+        whileInView={{ clipPath: "inset(0 0% 0 0)" }}
         viewport={{ once: true }}
         transition={{ duration: 1.4, ease }}
-        className="lane-dash-x absolute inset-x-0 top-0 h-[3px] origin-left opacity-80"
+        className="lane-dash-x absolute inset-x-0 top-0 h-[3px] opacity-80"
       />
 
       <motion.div

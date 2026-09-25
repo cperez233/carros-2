@@ -135,9 +135,9 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.9, ease }}
-                className="mb-4 flex items-center gap-2.5 font-sans text-[16px] font-semibold normal-case leading-tight tracking-normal text-bone/90 sm:text-[18px]"
+                className="mb-5 flex w-fit max-w-full items-center gap-2.5 rounded-[12px] bg-asphalt/65 py-2 pl-3 pr-4 font-sans text-[15px] font-semibold normal-case leading-tight tracking-normal text-bone ring-1 ring-bone/10 backdrop-blur-md [text-shadow:none] sm:rounded-full sm:text-[17px]"
               >
-                <span aria-hidden className="h-[3px] w-7 rounded-full bg-lane" />
+                <span aria-hidden className="h-[3px] w-5 shrink-0 rounded-full bg-lane" />
                 Renta de camionetas en {CITIES[0]} y el {REGION}
                 <span className="sr-only">: </span>
               </motion.span>

@@ -70,7 +70,7 @@
   }
 }
 .marquee {
-  animation: marquee 38s linear infinite;
+  animation: marquee 80s linear infinite;
 }
 
 .no-scrollbar::-webkit-scrollbar {

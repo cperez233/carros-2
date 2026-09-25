@@ -131,13 +131,15 @@ function Corners({ page }: { page: Page }) {
   const [compact, setCompact] = useState(false);
   useMotionValueEvent(scrollY, "change", (v) => setCompact(v > 120));
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
+  // Se destapa con recorte (no con escala) para que las rayas del carril no se aplasten
+  const reveal = useTransform(progress, (v) => `inset(0 ${(1 - v) * 100}% 0 0)`);
 
   return (
     <>
       <motion.div
         aria-hidden
-        style={{ scaleX: progress }}
-        className="lane-dash-x fixed inset-x-0 top-0 z-[55] h-[3px] origin-left"
+        style={{ clipPath: reveal }}
+        className="lane-dash-x fixed inset-x-0 top-0 z-[55] h-[3px]"
       />
       <motion.header
         initial={{ y: -40, opacity: 0 }}

@@ -20,7 +20,9 @@ const STEPS = [
 export default function Contract() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.8", "end 0.55"] });
-  const draw = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  // La carretera se destapa con recorte para que las rayas conserven su tamaño
+  const drawX = useTransform(scrollYProgress, (v) => `inset(0 ${(1 - Math.min(1, Math.max(0, v))) * 100}% 0 0)`);
+  const drawY = useTransform(scrollYProgress, (v) => `inset(0 0 ${(1 - Math.min(1, Math.max(0, v))) * 100}% 0)`);
   // Las líneas "avanzan" como si fuéramos manejando
   const dashX = useTransform(scrollYProgress, [0, 1], ["0px 0", "-208px 0"]);
   const dashY = useTransform(scrollYProgress, [0, 1], ["0 0px", "0 -160px"]);
@@ -45,13 +47,13 @@ export default function Contract() {
         <div ref={ref} className="relative mt-16 lg:mt-24">
           {/* Carretera horizontal (escritorio) */}
           <div aria-hidden className="absolute inset-x-0 top-[10px] hidden h-12 rounded-full bg-tarmac lg:block">
-            <motion.div style={{ scaleX: draw }} className="absolute inset-x-6 top-1/2 h-[3px] origin-left -translate-y-1/2">
+            <motion.div style={{ clipPath: drawX }} className="absolute inset-x-6 top-1/2 h-[3px] -translate-y-1/2">
               <motion.div style={{ backgroundPosition: dashX }} className="lane-dash-x h-full w-full" />
             </motion.div>
           </div>
           {/* Carretera vertical (móvil) */}
           <div aria-hidden className="absolute bottom-6 left-3 top-0 w-11 rounded-full bg-tarmac lg:hidden">
-            <motion.div style={{ scaleY: draw }} className="absolute inset-y-5 left-1/2 w-[3px] origin-top -translate-x-1/2">
+            <motion.div style={{ clipPath: drawY }} className="absolute inset-y-5 left-1/2 w-[3px] -translate-x-1/2">
               <motion.div style={{ backgroundPosition: dashY }} className="lane-dash-y h-full w-full" />
             </motion.div>
           </div>
