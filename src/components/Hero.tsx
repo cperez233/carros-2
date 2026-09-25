@@ -128,14 +128,19 @@ export default function Hero() {
           style={{ y: textY, opacity: textOpacity }}
           className="relative mx-auto grid w-full max-w-[1320px] items-end gap-10 px-4 sm:px-8 lg:grid-cols-12"
         >
-          <div className="min-w-0 lg:col-span-8">
+          <div className="relative min-w-0 lg:col-span-8">
+            {/* Penumbra difusa detrás del texto: se lee sin tapar la foto y no se ve como caja */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-x-8 -inset-y-10 -z-10 rounded-[50%] bg-asphalt/45 blur-3xl sm:-inset-x-16"
+            />
             <h1 className="font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_18px_rgba(10,10,8,.7),0_0_48px_rgba(10,10,8,.45)]">
               {/* La ubicación va dentro del H1 para que buscadores lean qué, para quién y dónde */}
               <motion.span
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.9, ease }}
-                className="mb-5 flex w-fit max-w-full items-center gap-2.5 rounded-[12px] bg-asphalt/65 py-2 pl-3 pr-4 font-sans text-[15px] font-semibold normal-case leading-tight tracking-normal text-bone ring-1 ring-bone/10 backdrop-blur-md [text-shadow:none] sm:rounded-full sm:text-[17px]"
+                className="mb-4 flex items-center gap-2.5 font-sans text-[16px] font-semibold normal-case leading-tight tracking-normal text-bone [text-shadow:0_1px_2px_rgba(10,10,8,.95),0_0_14px_rgba(10,10,8,.85)] sm:text-[18px]"
               >
                 <span aria-hidden className="h-[3px] w-5 shrink-0 rounded-full bg-lane" />
                 Renta de camionetas en {CITIES[0]} y el {REGION}

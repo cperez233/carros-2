@@ -112,7 +112,7 @@ function webPage(route: Route, extra: Record<string, unknown> = {}) {
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": BUSINESS_ID },
     primaryImageOfPage: { "@type": "ImageObject", url: OG_IMAGE.url },
-    dateModified: LAST_UPDATED,
+    dateModified: `${LAST_UPDATED}T00:00:00-05:00`, // ISO completo: Search Console marca la fecha sola como inválida
     ...extra,
   };
 }

@@ -214,7 +214,7 @@ export default function Fleet() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, ease, delay: 0.35 }}
-                      className="mt-4 hidden w-fit rounded-full bg-asphalt/65 px-4 py-2 text-[16px] font-semibold text-bone ring-1 ring-bone/10 backdrop-blur-md sm:block"
+                      className="mt-3 hidden text-[18px] font-semibold text-bone [text-shadow:0_1px_2px_rgba(10,10,8,.95),0_0_14px_rgba(10,10,8,.85)] sm:block"
                     >
                       {v.use}
                     </motion.p>
