@@ -8,47 +8,60 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { ArrowLeft, Building2, CarFront, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Building2, CarFront, CircleHelp, LayoutGrid, MessageCircle, Phone, Route, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { BRAND, BRAND_TAGLINE, COMPANY, PHONE } from "../data";
+import { BRAND, BRAND_TAGLINE, CITIES, COMPANY, PHONE } from "../data";
 import { currentPath } from "../path";
 import { ease, softSpring, spring, useCanHover } from "./motion";
 
 export type Page = "home" | "inventario";
 export const isInventoryPath = () => currentPath().startsWith("/inventario");
 
-export const LINKS: { id: string; label: string; icon: LucideIcon; href: string }[] = [
+// narrow: se oculta en celulares angostos para que el dock quepa (la sección sigue a un scroll)
+export const LINKS: { id: string; label: string; icon: LucideIcon; href: string; narrow?: boolean }[] = [
   { id: "flota", label: "Inventario", icon: CarFront, href: "/#flota" },
   { id: "incluye", label: "Incluye", icon: ShieldCheck, href: "/#incluye" },
-  { id: "contrato", label: "Contrato", icon: Route, href: "/#contrato" },
+  { id: "contrato", label: "Contrato", icon: Route, href: "/#contrato", narrow: true },
   { id: "clientes", label: "Empresas", icon: Building2, href: "/#clientes" },
+  { id: "preguntas", label: "Preguntas", icon: CircleHelp, href: "/#preguntas" },
 ];
-const INVENTORY_LINK = { id: "inventario", label: "Inventario", icon: LayoutGrid, href: "/inventario" };
+const INVENTORY_LINK: (typeof LINKS)[number] = { id: "inventario", label: "Inventario", icon: LayoutGrid, href: "/inventario" };
 
 /** En la página de inicio los enlaces a secciones son anclas locales; desde otra página vuelven al inicio. */
 export const linkHref = (href: string, page: Page) => (page === "home" && href.startsWith("/#") ? href.slice(1) : href);
 
-/** Volante del logo de Master dentro del cuadro amarillo de carril. Gira al pasar el mouse. */
+/** Placa amarilla de carro particular colombiano con MSQ·01. Grande lleva el municipio abajo, como las reales. */
+export const PLATE_CODE = "MSQ·01";
 export function LogoMark({ size = 32, className = "" }: { size?: number; className?: string }) {
+  const city = size >= 48; // debajo de 48 px el municipio no se alcanza a leer
   return (
     <motion.span
       aria-hidden
-      whileHover={{ rotate: -8 }}
+      whileHover={{ rotate: -4, y: -1 }}
       transition={softSpring}
-      style={{ width: size, height: size, borderRadius: size * 0.28 }}
-      className={`flex shrink-0 items-center justify-center bg-lane text-asphalt ${className}`}
+      style={{ width: size * 2, height: size }}
+      className={`flex shrink-0 ${className}`}
     >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2.4}
-        strokeLinecap="round"
-        className="h-[72%] w-[72%] transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] group-hover:-rotate-[35deg]"
-      >
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none" />
-        <path d="M3.4 11.2 9.5 12M14.5 12l6.1-.8M12 14.6V21" />
+      <svg viewBox="0 0 112 56" className="h-full w-full">
+        <rect x="1.5" y="1.5" width="109" height="53" rx="8" fill="var(--color-lane)" stroke="var(--color-asphalt)" strokeWidth="3" />
+        <rect x="6" y="6" width="100" height="44" rx="4.5" fill="none" stroke="var(--color-asphalt)" strokeWidth="1.6" />
+        <text
+          x="56"
+          y={city ? 34.5 : 40.5}
+          textAnchor="middle"
+          fontFamily="Barlow Condensed, Arial Narrow, sans-serif"
+          fontWeight="700"
+          fontSize={city ? 27 : 33}
+          letterSpacing="1.5"
+          fill="var(--color-asphalt)"
+        >
+          {PLATE_CODE}
+        </text>
+        {city && (
+          <text x="56" y="46" textAnchor="middle" fontFamily="Public Sans, sans-serif" fontWeight="700" fontSize="6.4" letterSpacing="1.6" fill="var(--color-asphalt)">
+            {CITIES[0].toUpperCase()}
+          </text>
+        )}
       </svg>
     </motion.span>
   );
@@ -180,6 +193,7 @@ function DockItem({
   active,
   mouseX,
   magnify,
+  className = "",
 }: {
   href: string;
   label: string;
@@ -187,6 +201,7 @@ function DockItem({
   active: boolean;
   mouseX: MotionValue<number>;
   magnify: boolean;
+  className?: string;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const distance = useTransform(mouseX, (v) => {
@@ -203,7 +218,7 @@ function DockItem({
       style={{ scale, y: lift }}
       whileTap={{ scale: 0.9 }}
       aria-current={active ? "true" : undefined}
-      className={`relative flex h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 rounded-[14px] pt-0.5 px-1.5 sm:px-2 transition-colors duration-300 sm:min-w-[74px] ${
+      className={`relative flex h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 rounded-[14px] pt-0.5 px-1.5 sm:px-2 transition-colors duration-300 sm:min-w-[74px] ${className} ${
         active ? "text-asphalt" : "text-stone hover:text-bone"
       }`}
     >
@@ -276,7 +291,16 @@ function Dock({ page }: { page: Page }) {
         className="flex items-end gap-0.5 rounded-[20px] bg-tarmac/90 p-1.5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl"
       >
         {(page === "inventario" ? [INVENTORY_LINK, ...LINKS.slice(1)] : LINKS).map((l) => (
-          <DockItem key={l.id} href={linkHref(l.href, page)} label={l.label} Icon={l.icon} active={active === l.id} mouseX={mouseX} magnify={magnify} />
+          <DockItem
+            key={l.id}
+            href={linkHref(l.href, page)}
+            label={l.label}
+            Icon={l.icon}
+            active={active === l.id}
+            mouseX={mouseX}
+            magnify={magnify}
+            className={l.narrow ? "max-[419px]:hidden" : ""}
+          />
         ))}
         <span aria-hidden className="mx-1 mb-3 hidden h-7 w-px self-end bg-bone/10 sm:block" />
         <motion.a
@@ -285,12 +309,12 @@ function Dock({ page }: { page: Page }) {
           whileTap={{ scale: 0.92 }}
           transition={softSpring}
           aria-current={active === "contacto" ? "true" : undefined}
-          className="group relative flex h-[52px] items-center gap-2 rounded-[14px] bg-lane px-3 text-[14px] font-semibold text-asphalt shadow-[var(--shadow-rest)] sm:px-4"
+          className="group relative flex h-[52px] min-w-[60px] flex-col items-center justify-center gap-1 rounded-[14px] bg-lane px-2 pt-0.5 text-[11px] font-bold text-asphalt shadow-[var(--shadow-rest)] sm:flex-row sm:gap-2 sm:px-4 sm:pt-0 sm:text-[14px] sm:font-semibold"
         >
           {/* En la sección de cotizar, el indicador blanco también llega aquí */}
           {active === "contacto" && <DockIndicator />}
           <DockIcon Icon={MessageCircle} active={active === "contacto"} className="transition-transform duration-300 group-hover:-rotate-12" />
-          <span className="relative">Cotizar</span>
+          <span className="relative mb-1 leading-none sm:mb-0">Cotizar</span>
         </motion.a>
       </div>
       </div>

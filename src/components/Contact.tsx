@@ -43,7 +43,7 @@ function Chips<T extends string>({
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="border-t border-bone/10 pt-4">
-      <p className="mb-3 text-[13px] font-medium text-stone">{label}</p>
+      <p className="mb-3 text-[14px] font-medium text-stone">{label}</p>
       {children}
     </div>
   );
@@ -96,7 +96,7 @@ function VehiclePicker({
               </span>
               <span className="relative min-w-0">
                 <span className="block text-[15px] font-semibold leading-tight">{t.label}</span>
-                <span className={`hidden truncate text-[12px] sm:block ${on ? "text-asphalt/70" : "text-stone"}`}>{t.hint}</span>
+                <span className={`hidden truncate text-[13px] sm:block ${on ? "text-asphalt/70" : "text-stone"}`}>{t.hint}</span>
               </span>
             </motion.button>
           );
@@ -144,7 +144,7 @@ function VehiclePicker({
           </motion.div>
         </AnimatePresence>
       </div>
-      <p className="mt-2 text-[12px] text-stone">Modelo opcional. Si no eliges uno, cotizamos el tipo con la opción disponible.</p>
+      <p className="mt-2 text-[13px] text-stone">Modelo opcional. Si no eliges uno, cotizamos el tipo con la opción disponible.</p>
     </div>
   );
 }
@@ -316,7 +316,7 @@ export default function Contact() {
         >
           <div className="grid gap-5">
             <label className="block">
-              <span className="mb-3 block text-[13px] font-medium text-stone">Tu nombre o el de tu empresa</span>
+              <span className="mb-3 block text-[14px] font-medium text-stone">Tu nombre o el de tu empresa</span>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -342,12 +342,12 @@ export default function Contact() {
           </div>
 
           <div className="mt-7 rounded-[16px] bg-asphalt/70 p-4">
-            <p className="text-[12px] font-medium text-stone">Así llega tu mensaje por WhatsApp</p>
+            <p className="text-[13px] font-medium text-stone">Así llega tu mensaje por WhatsApp</p>
             <div className="mt-3 flex justify-end">
               <motion.div
                 layout
                 transition={{ layout: { duration: 0.3, ease } }}
-                className="relative max-w-[92%] rounded-[16px] rounded-br-[4px] bg-lane/15 px-4 py-3 text-[14px] leading-[1.55] text-bone ring-1 ring-lane/30"
+                className="relative max-w-[92%] rounded-[16px] rounded-br-[4px] bg-lane/15 px-4 py-3 text-[15px] leading-[1.55] text-bone ring-1 ring-lane/30"
               >
                 <motion.p layout="position">{message}</motion.p>
                 <motion.p layout="position" className="mt-1 text-right text-[11px] text-lane">

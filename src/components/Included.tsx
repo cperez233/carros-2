@@ -5,7 +5,7 @@ import { INCLUDED, NOT_INCLUDED } from "../data";
 import { ease, staggerChild, staggerParent, Tilt } from "./motion";
 
 const STATEMENT =
-  "Pagas lo mismo cada mes. Póliza todo riesgo, mantenimiento, GPS, SOAT y tecnomecánica ya están en la tarifa, así que no hay cuentas sorpresa de la camioneta.";
+  "Pagas lo mismo cada mes, sin cuentas sorpresa de la camioneta.";
 
 function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
   const opacity = useTransform(progress, range, [0.18, 1]);
@@ -40,8 +40,8 @@ export default function Included() {
       {/* Borde superior en diagonal leve, como una berma */}
       <div aria-hidden className="absolute inset-x-0 -top-px h-10 bg-asphalt [clip-path:polygon(0_0,100%_0,100%_15%,0_100%)]" />
       <div className="mx-auto max-w-[1320px] px-4 pb-20 pt-24 sm:px-8 lg:pb-28 lg:pt-32">
-        <p className="flex items-center gap-2.5 text-[13px] font-medium text-stone-dark">
-          <span aria-hidden className="h-[2px] w-5 bg-lane-deep" />
+        <p className="flex items-center gap-3 text-[17px] font-semibold text-asphalt/80 sm:text-[18px]">
+          <span aria-hidden className="h-[3px] w-7 rounded-full bg-lane-deep" />
           Qué incluye la tarifa
         </p>
         <div className="mt-6 max-w-[62rem]">
@@ -56,7 +56,7 @@ export default function Included() {
             variants={staggerParent}
             className="lg:col-span-7"
           >
-            <motion.li variants={staggerChild} className="pb-4 text-[14px] font-semibold">
+            <motion.li variants={staggerChild} className="pb-4 text-[15px] font-semibold">
               Incluido
             </motion.li>
             {INCLUDED.map((item) => (
@@ -73,7 +73,7 @@ export default function Included() {
                   <Check aria-hidden className="h-4 w-4" strokeWidth={2.5} />
                 </span>
                 <h3 className="relative font-display text-[28px] font-semibold leading-tight tracking-tight transition-transform duration-300 group-hover:translate-x-1">{item.title}</h3>
-                <p className="relative col-start-2 mt-1 text-[15px] leading-[1.6] text-asphalt/70 sm:col-start-3 sm:mt-0">{item.detail}</p>
+                <p className="relative col-start-2 mt-1 text-[17px] leading-[1.6] text-asphalt/75 sm:col-start-3 sm:mt-0">{item.detail}</p>
               </motion.li>
             ))}
           </motion.ul>
@@ -86,16 +86,16 @@ export default function Included() {
             className="lg:col-span-4 lg:col-start-9"
           >
             <Tilt max={5} className="rounded-[22px] bg-asphalt p-6 text-bone shadow-[var(--shadow-raised)] sm:p-7 lg:sticky lg:top-28">
-              <p className="text-[14px] font-semibold">Por tu cuenta</p>
+              <p className="text-[15px] font-semibold">Por tu cuenta</p>
               <ul className="mt-4">
                 {NOT_INCLUDED.map((n) => (
-                  <li key={n} className="group flex items-center gap-3 border-t border-bone/10 py-3.5 text-[16px] transition-colors hover:text-lane">
+                  <li key={n} className="group flex items-center gap-3 border-t border-bone/10 py-3.5 text-[17px] transition-colors hover:text-lane">
                     <Minus aria-hidden className="h-4 w-4 text-stone transition-transform duration-300 group-hover:scale-x-150" />
                     {n}
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[14px] leading-[1.6] text-stone">
+              <p className="mt-4 text-[15px] leading-[1.6] text-stone">
                 El vehículo cumple las normas de tránsito de cada municipio, incluido el pico y placa donde aplique.
               </p>
             </Tilt>

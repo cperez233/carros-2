@@ -102,8 +102,8 @@ export function SplitWords({
 
 export function Eyebrow({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`flex items-center gap-2.5 text-[13px] font-medium text-stone ${className}`}>
-      <span aria-hidden className="h-[2px] w-5 bg-lane" />
+    <p className={`flex items-center gap-3 text-[17px] font-semibold text-bone/85 sm:text-[18px] ${className}`}>
+      <span aria-hidden className="h-[3px] w-7 rounded-full bg-lane" />
       {children}
     </p>
   );
@@ -181,5 +181,26 @@ export function Button({ children, href, onClick, className = "", external, vari
     <motion.button type={type} onClick={onClick} {...common}>
       {inner}
     </motion.button>
+  );
+}
+
+/** Palabras que entran rápido desde la derecha con desenfoque, como un carro que pasa. */
+export function SpeedWords({ text, delay = 0, className = "" }: { text: string; delay?: number; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((w, i) => (
+        <motion.span
+          key={`${w}-${i}`}
+          initial={{ opacity: 0, x: 90, filter: "blur(14px)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, delay: delay + i * 0.07, ease }}
+          className={`inline-block ${className}`}
+        >
+          {w}
+          {i < words.length - 1 ? "\u00a0" : ""}
+        </motion.span>
+      ))}
+    </>
   );
 }

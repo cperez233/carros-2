@@ -5,15 +5,15 @@ import { ease, Eyebrow, reveal, SplitWords } from "./motion";
 const STEPS = [
   {
     title: "Cotizas",
-    body: "Nos dices qué vehículo necesitas, cuántas unidades, dónde va a operar y por cuánto tiempo. Te enviamos la tarifa por escrito.",
+    body: "Nos dices qué vehículo, cuántas unidades, dónde y por cuánto tiempo. Te enviamos la tarifa por escrito.",
   },
   {
     title: "Firmas y lo recibes",
-    body: "Revisamos tus documentos, firmas el contrato y te entregamos la camioneta en Barrancabermeja o en el sitio de la operación, con SOAT, tecnomecánica y póliza vigentes.",
+    body: "Revisamos tus documentos, firmas y te entregamos la camioneta en Barrancabermeja o en el sitio de la operación.",
   },
   {
     title: "Sigues mes a mes",
-    body: "Pagas la misma tarifa cada mes. Cuando ya no lo necesites, lo devuelves al cierre del mes. No hay permanencia mínima.",
+    body: "Pagas la misma tarifa cada mes y la devuelves al cierre del mes cuando ya no la necesites.",
   },
 ];
 
@@ -37,7 +37,7 @@ export default function Contract() {
               <SplitWords text="sin atarte a un plazo" className="text-bone/50" delay={0.12} />
             </h2>
           </div>
-          <motion.p {...reveal} className="max-w-md text-[16px] leading-[1.65] text-bone/75 lg:col-span-4 lg:col-start-9">
+          <motion.p {...reveal} className="max-w-md text-[17px] leading-[1.65] text-bone/80 lg:col-span-4 lg:col-start-9">
             Sirve para un contrato de obra o mantenimiento de pocos meses, para cubrir una unidad propia que está en el taller o para toda la vigencia del contrato con tu cliente.
           </motion.p>
         </div>
@@ -80,7 +80,7 @@ export default function Contract() {
                 </motion.span>
                 <div className="pt-4 lg:pt-6">
                   <h3 className="font-display text-[34px] font-semibold leading-none tracking-tight transition-colors duration-300 group-hover:text-lane">{s.title}</h3>
-                  <p className="mt-3 max-w-sm text-[15px] leading-[1.65] text-bone/70 transition-colors duration-300 group-hover:text-bone/90">{s.body}</p>
+                  <p className="mt-3 max-w-sm text-[17px] leading-[1.6] text-bone/75 transition-colors duration-300 group-hover:text-bone/90">{s.body}</p>
                 </div>
               </motion.li>
             ))}

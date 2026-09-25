@@ -1,7 +1,10 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { CITIES, IMAGES, REGION, waLink } from "../data";
-import { Button, ease, spring, Tilt } from "./motion";
+import { CITIES, cop, IMAGES, REGION, waLink } from "../data";
+import { INVENTORY } from "../inventory";
+import { Button, ease, SpeedWords, spring, Tilt } from "./motion";
+
+const FROM_PRICE = Math.min(...INVENTORY.map((u) => u.price));
 
 const ROWS: { label: string; on: boolean }[] = [
   { label: "Póliza todo riesgo", on: true },
@@ -43,8 +46,8 @@ function TariffPanel() {
       className="relative w-full rounded-[22px] bg-tarmac/80 p-5 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl sm:p-6"
     >
       <div className="flex items-baseline justify-between gap-4">
-        <p className="text-[13px] font-medium text-stone">Tu tarifa mensual</p>
-        <p className="text-[13px] text-stone">Contrato mes a mes</p>
+        <p className="text-[14px] font-medium text-stone">Tu tarifa mensual</p>
+        <p className="text-[14px] text-stone">Contrato mes a mes</p>
       </div>
       <ul className="mt-4">
         {ROWS.map((r, i) => (
@@ -60,31 +63,10 @@ function TariffPanel() {
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-[13px] leading-relaxed text-stone">
-        Lo que está encendido ya viene en el precio. Combustible, peajes y multas corren por tu cuenta.
+      <p className="mt-2 text-[14px] leading-relaxed text-stone">
+        Lo que está encendido ya viene en el precio.
       </p>
     </motion.div>
-  );
-}
-
-/** Palabras que entran rápido desde la derecha con desenfoque, como un carro que pasa. */
-function SpeedWords({ text, delay = 0, className = "" }: { text: string; delay?: number; className?: string }) {
-  const words = text.split(" ");
-  return (
-    <>
-      {words.map((w, i) => (
-        <motion.span
-          key={`${w}-${i}`}
-          initial={{ opacity: 0, x: 90, filter: "blur(14px)" }}
-          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.9, delay: delay + i * 0.07, ease }}
-          className={`inline-block ${className}`}
-        >
-          {w}
-          {i < words.length - 1 ? "\u00a0" : ""}
-        </motion.span>
-      ))}
-    </>
   );
 }
 
@@ -146,16 +128,16 @@ export default function Hero() {
           style={{ y: textY, opacity: textOpacity }}
           className="relative mx-auto grid w-full max-w-[1320px] items-end gap-10 px-4 sm:px-8 lg:grid-cols-12"
         >
-          <div className="lg:col-span-8">
+          <div className="min-w-0 lg:col-span-8">
             <h1 className="font-display text-[clamp(3.2rem,8.6vw,7.6rem)] font-bold uppercase leading-[0.86] tracking-[-0.01em] [text-shadow:0_2px_18px_rgba(10,10,8,.7),0_0_48px_rgba(10,10,8,.45)]">
               {/* La ubicación va dentro del H1 para que buscadores lean qué, para quién y dónde */}
               <motion.span
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.9, ease }}
-                className="mb-4 flex items-center gap-2.5 font-sans text-[14px] font-semibold normal-case leading-none tracking-normal text-bone/85 sm:text-[15px]"
+                className="mb-4 flex items-center gap-2.5 font-sans text-[16px] font-semibold normal-case leading-tight tracking-normal text-bone/90 sm:text-[18px]"
               >
-                <span aria-hidden className="h-[2px] w-5 bg-lane" />
+                <span aria-hidden className="h-[3px] w-7 rounded-full bg-lane" />
                 Renta de camionetas en {CITIES[0]} y el {REGION}
                 <span className="sr-only">: </span>
               </motion.span>
@@ -167,10 +149,10 @@ export default function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 1.6, ease }}
-              className="mt-6 hidden max-w-[34rem] text-[17px] font-medium leading-[1.65] text-bone [text-shadow:0_1px_12px_rgba(10,10,8,.8)] sm:block"
+              className="mt-6 max-w-[34rem] text-[17px] font-medium leading-[1.6] text-bone [text-shadow:0_1px_12px_rgba(10,10,8,.8)] sm:text-[19px]"
             >
-              Para empresas contratistas en Barrancabermeja y el Magdalena Medio. Una tarifa fija cada mes con póliza todo riesgo,
-              mantenimiento, GPS satelital, SOAT y tecnomecánica. Sin permanencia: el contrato es mes a mes.
+              Para empresas contratistas en Barrancabermeja y el Magdalena Medio.{" "}
+              <strong className="font-semibold text-lane">Desde {cop(FROM_PRICE)} al mes + IVA</strong>, con todo incluido y sin permanencia.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -178,7 +160,7 @@ export default function Hero() {
               transition={{ duration: 0.9, delay: 1.75, ease }}
               className="mt-8 flex flex-wrap gap-3"
             >
-              <Button href="#flota">Ver flota y tarifas</Button>
+              <Button href="#flota">Ver camionetas y tarifas</Button>
               <Button href={waLink("Hola, quiero cotizar la renta mensual de un vehículo.")} external variant="ghost">
                 Cotizar por WhatsApp
               </Button>
@@ -196,12 +178,11 @@ export default function Hero() {
         </div>
       </div>
 
-      <CityStrip />
     </section>
   );
 }
 
-function CityStrip() {
+export function CityStrip() {
   const items = [...CITIES, ...CITIES, ...CITIES];
   return (
     <motion.div
@@ -209,7 +190,7 @@ function CityStrip() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 1, ease }}
-      className="mt-14 border-y border-bone/10 py-6 lg:mt-12"
+      className="border-y border-bone/10 py-6"
     >
       <p className="mx-auto mb-4 max-w-[1320px] px-4 text-[14px] font-medium text-stone sm:px-8">Entregamos en</p>
       <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">

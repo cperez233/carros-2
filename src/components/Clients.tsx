@@ -16,7 +16,6 @@ const CONTENT: Record<
       "Una o varias unidades en el mismo contrato.",
       "Factura electrónica mensual a nombre de la empresa.",
       "Te entregamos SOAT, tecnomecánica y póliza de cada unidad para inscribirla con tu contratante.",
-      "Agregas o devuelves unidades al cierre de cada mes.",
     ],
     docs: ["RUT", "Certificado de Cámara de Comercio", "Cédula del representante legal"],
     cta: "Hola, quiero cotizar camionetas en renta mensual para mi empresa.",
@@ -128,14 +127,14 @@ export default function Clients() {
                     <motion.li
                       key={p}
                       variants={staggerChild}
-                      className="group flex gap-3 border-t border-bone/10 py-3 text-[15px] leading-[1.55] text-bone/85 transition-colors hover:text-bone"
+                      className="group flex gap-3 border-t border-bone/10 py-3 text-[17px] leading-[1.5] text-bone/85 transition-colors hover:text-bone"
                     >
                       <span aria-hidden className="mt-[9px] h-[3px] w-3 shrink-0 origin-left bg-lane transition-transform duration-300 group-hover:scale-x-[1.8]" />
                       {p}
                     </motion.li>
                   ))}
                 </ul>
-                <motion.p variants={staggerChild} className="mt-5 text-[13px] leading-[1.6] text-stone">
+                <motion.p variants={staggerChild} className="mt-5 text-[14px] leading-[1.6] text-stone">
                   Documentos: {c.docs.join(" · ")}
                 </motion.p>
                 <motion.div variants={staggerChild} className="mt-6">

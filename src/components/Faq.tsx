@@ -68,7 +68,7 @@ function Item({ q, a, open, onToggle }: { q: string; a: string; open: boolean; o
           initial={false}
           animate={{ opacity: open ? 1 : 0, y: open ? 0 : -10, filter: open ? "blur(0px)" : "blur(4px)" }}
           transition={{ duration: open ? 0.45 : 0.25, ease, delay: open ? 0.12 : 0 }}
-          className="max-w-[46rem] pb-6 pr-14 text-[16px] leading-[1.7] text-bone/75"
+          className="max-w-[46rem] pb-6 pr-14 text-[17px] leading-[1.7] text-bone/80"
         >
           {a}
         </motion.p>

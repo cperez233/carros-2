@@ -123,7 +123,7 @@ function UnitCard({ u, onOpen }: { u: Unit; onOpen: () => void }) {
           {/* Precio montado sobre el borde de la foto */}
           <div className="relative z-10 -mt-7 ml-4 mr-auto rounded-[12px] bg-lane px-3.5 py-2 text-asphalt shadow-[var(--shadow-raised)]">
             <p className="font-display text-[24px] font-bold leading-none tracking-tight">{cop(u.price)}</p>
-            <p className="mt-0.5 text-[11px] font-semibold">al mes + IVA</p>
+            <p className="mt-0.5 text-[12px] font-semibold">al mes + IVA</p>
           </div>
 
           <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
@@ -264,7 +264,7 @@ function UnitSheet({ u, onClose }: { u: Unit; onClose: () => void }) {
           </motion.h2>
           <motion.div variants={item} className="mt-4 inline-block rounded-[14px] bg-lane px-4 py-2.5 text-asphalt">
             <p className="font-display text-[34px] font-bold leading-none tracking-tight">{cop(u.price)}</p>
-            <p className="mt-1 text-[12px] font-semibold">al mes + IVA · póliza, mantenimiento, GPS, SOAT y tecnomecánica incluidos</p>
+            <p className="mt-1 text-[13px] font-semibold">al mes + IVA · póliza, mantenimiento, GPS, SOAT y tecnomecánica incluidos</p>
           </motion.div>
 
           <motion.dl variants={item} className="mt-6 grid grid-cols-1 gap-x-6 sm:grid-cols-2">

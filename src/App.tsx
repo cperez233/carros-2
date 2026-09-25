@@ -4,7 +4,7 @@ import Contract from "./components/Contract";
 import Faq from "./components/Faq";
 import Fleet from "./components/Fleet";
 import { Footer } from "./components/Footer";
-import Hero from "./components/Hero";
+import Hero, { CityStrip } from "./components/Hero";
 import Included from "./components/Included";
 
 export default function HomePage() {
@@ -13,6 +13,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Fleet />
+        <CityStrip />
         <Included />
         <Contract />
         <Clients />

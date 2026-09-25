@@ -15,47 +15,56 @@ OUT = Path(__file__).resolve().parent.parent / "public"
 SS = 4  # supermuestreo para bordes suaves
 
 
-def mark(size: int, radius: float = 0.28) -> Image.Image:
-    """Cuadro amarillo con el volante (mismo dibujo que LogoMark en Nav.tsx, viewBox 24)."""
-    S = size * SS
-    im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+PLATE = "MSQ·01"  # Placa del logo (igual que PLATE_CODE en Nav.tsx)
+CITY = "BARRANCABERMEJA"
+
+
+def plate(w: int, code: str = PLATE, city: bool = True) -> Image.Image:
+    """Placa amarilla de carro particular (mismo dibujo que LogoMark en Nav.tsx, viewBox 112x56)."""
+    W, H = w * SS, w * SS // 2
+    k = W / 112
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    d.rounded_rectangle([0, 0, S - 1, S - 1], radius=S * radius, fill=LANE)
-    k, o = S * 0.72 / 24, S * 0.14
-    p = lambda x, y: (o + x * k, o + y * k)
-    w = round(2.4 * k)
-    cx, cy = p(12, 12)
-    d.ellipse([cx - 9 * k, cy - 9 * k, cx + 9 * k, cy + 9 * k], outline=ASPHALT, width=w)
-    d.ellipse([cx - 2.6 * k, cy - 2.6 * k, cx + 2.6 * k, cy + 2.6 * k], fill=ASPHALT)
-    for a, b in [((3.4, 11.2), (9.5, 12)), ((14.5, 12), (20.6, 11.2)), ((12, 14.6), (12, 21))]:
-        d.line([p(*a), p(*b)], fill=ASPHALT, width=w)
-        for pt in (p(*a), p(*b)):
-            d.ellipse([pt[0] - w / 2, pt[1] - w / 2, pt[0] + w / 2, pt[1] + w / 2], fill=ASPHALT)
-    return im.resize((size, size), Image.LANCZOS)
+    d.rounded_rectangle([1.5 * k, 1.5 * k, 110.5 * k, 54.5 * k], radius=8 * k, fill=LANE, outline=ASPHALT, width=round(3 * k))
+    d.rounded_rectangle([6 * k, 6 * k, 106 * k, 50 * k], radius=4.5 * k, outline=ASPHALT, width=max(1, round(1.6 * k)))
+    f = font("NotoSans-ExtraCondensedBold.ttf", round((27 if city else 36) * k))
+    d.text((56 * k, (24.5 if city else 29) * k), code, font=f, fill=ASPHALT, anchor="mm")
+    if city:
+        d.text((56 * k, 44.5 * k), " ".join(CITY), font=font("NotoSans-Bold.ttf", round(4.6 * k)), fill=ASPHALT, anchor="mm")
+    return im.resize((w, w // 2), Image.LANCZOS)
+
+
+def mark(size: int) -> Image.Image:
+    """Ícono cuadrado transparente: la placa centrada. En tamaños chicos solo dice MSQ."""
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    small = size <= 64
+    pl = plate(round(size * 0.98), "MSQ" if small else PLATE, city=not small)
+    im.paste(pl, ((size - pl.width) // 2, (size - pl.height) // 2), pl)
+    return im
 
 
 def on_bg(size: int, pad: float) -> Image.Image:
     bg = Image.new("RGB", (size, size), ASPHALT)
-    m = mark(round(size * (1 - 2 * pad)), radius=0.24)
-    bg.paste(m, (round(size * pad),) * 2, m)
+    pl = plate(round(size * (1 - 2 * pad)))
+    bg.paste(pl, ((size - pl.width) // 2, (size - pl.height) // 2), pl)
     return bg
 
 
 mark(32).save(OUT / "favicon-32.png")
-on_bg(180, 0.12).save(OUT / "apple-touch-icon.png")
-on_bg(192, 0.12).save(OUT / "icon-192.png")
-on_bg(512, 0.12).save(OUT / "icon-512.png")
-mark(512, radius=0.24).save(OUT / "logo-512.png")
+on_bg(180, 0.08).save(OUT / "apple-touch-icon.png")
+on_bg(192, 0.08).save(OUT / "icon-192.png")
+on_bg(512, 0.08).save(OUT / "icon-512.png")
+mark(512).save(OUT / "logo-512.png")
 
 # Imagen para compartir 1200x630
 W, H = 1200, 630
 og = Image.new("RGB", (W, H), ASPHALT)
 d = ImageDraw.Draw(og)
-m = mark(96)
-og.paste(m, (72, 64), m)
-d.text((190, 58), BRAND, font=font("NotoSans-ExtraCondensedExtraBold.ttf", 76), fill=BONE)
-d.rectangle([192, 150, 214, 154], fill=LANE)
-d.text((224, 140), " ".join(TAGLINE), font=font("NotoSans-SemiBold.ttf", 18), fill=STONE)
+m = plate(200)
+og.paste(m, (68, 52), m)
+d.text((290, 58), BRAND, font=font("NotoSans-ExtraCondensedExtraBold.ttf", 76), fill=BONE)
+d.rectangle([292, 150, 314, 154], fill=LANE)
+d.text((324, 140), " ".join(TAGLINE), font=font("NotoSans-SemiBold.ttf", 18), fill=STONE)
 f = font("NotoSans-ExtraCondensedBold.ttf", 104)
 d.text((68, 238), HEADLINE[0], font=f, fill=BONE)
 d.text((68, 350), HEADLINE[1], font=f, fill=LANE)
