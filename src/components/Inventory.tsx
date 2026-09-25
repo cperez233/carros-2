@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useDragControls, type PanInfo } from "framer-motion";
-import { ArrowDownUp, ArrowUpRight, Cog, Fuel, Gauge, MapPin, Users, X } from "lucide-react";
+import { ArrowDownUp, ArrowUpRight, ChevronDown, Cog, Fuel, Gauge, MapPin, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { CITIES, cop, waLink, type City } from "../data";
 import { INVENTORY, kmFmt, TYPE_LABEL, unitMessage, type Unit, type UnitType } from "../inventory";
@@ -21,15 +21,20 @@ function Segmented<T extends string>({
   value,
   onChange,
   label,
+  stretch = false,
+  className = "",
 }: {
   id: string;
   options: { id: T; label: string }[];
   value: T;
   onChange: (v: T) => void;
   label: string;
+  /** Botones del mismo ancho ocupando toda la fila (celular y tablet) */
+  stretch?: boolean;
+  className?: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="flex shrink-0 rounded-[12px] bg-asphalt p-1">
+    <div role="radiogroup" aria-label={label} className={`flex shrink-0 rounded-[12px] bg-asphalt p-1 ${className}`}>
       {options.map((o) => (
         <motion.button
           key={o.id}
@@ -37,7 +42,7 @@ function Segmented<T extends string>({
           aria-checked={value === o.id}
           onClick={() => onChange(o.id)}
           whileTap={{ scale: 0.94 }}
-          className={`relative h-10 whitespace-nowrap rounded-[9px] px-3.5 text-[13px] font-semibold transition-colors duration-300 ${
+          className={`relative h-10 whitespace-nowrap rounded-[9px] px-3.5 text-[13px] font-semibold transition-colors duration-300 ${stretch ? "flex-1 lg:flex-none" : ""} ${
             value === o.id ? "text-asphalt" : "text-stone hover:text-bone"
           }`}
         >
@@ -46,6 +51,29 @@ function Segmented<T extends string>({
         </motion.button>
       ))}
     </div>
+  );
+}
+
+/** Municipio en celular y tablet: selector nativo, completo a la vista y cómodo al tacto. */
+function CitySelect({ value, onChange, counts }: { value: CityFilter; onChange: (v: CityFilter) => void; counts: Record<string, number> }) {
+  return (
+    <label className="relative flex h-12 min-w-0 flex-1 items-center rounded-[12px] bg-asphalt lg:hidden transition-colors focus-within:ring-2 focus-within:ring-lane">
+      <MapPin aria-hidden className="pointer-events-none absolute left-3.5 h-4 w-4 text-lane" />
+      <span className="sr-only">Municipio</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as CityFilter)}
+        className="h-full w-full min-w-0 cursor-pointer appearance-none truncate rounded-[12px] bg-transparent pl-10 pr-9 text-[14px] font-semibold text-bone focus:outline-none"
+      >
+        <option value="all">Todos los municipios</option>
+        {CITIES.map((c) => (
+          <option key={c} value={c}>
+            {c} ({counts[c] ?? 0})
+          </option>
+        ))}
+      </select>
+      <ChevronDown aria-hidden className="pointer-events-none absolute right-3 h-4 w-4 text-stone" />
+    </label>
   );
 }
 
@@ -289,6 +317,14 @@ export default function Inventory() {
     [type, city, sort]
   );
 
+  // Unidades por municipio con el tipo elegido, para el selector del celular
+  const counts = useMemo(() => {
+    const byType = INVENTORY.filter((u) => type === "all" || u.type === type);
+    const c: Record<string, number> = { all: byType.length };
+    byType.forEach((u) => (c[u.city] = (c[u.city] ?? 0) + 1));
+    return c;
+  }, [type]);
+
   const reset = () => {
     setType("all");
     setCity("all");
@@ -329,27 +365,32 @@ export default function Inventory() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease, delay: 0.6 }}
-            className="no-scrollbar flex items-center gap-2 overflow-x-auto rounded-[16px] bg-tarmac/90 p-2 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl"
+            className="no-scrollbar flex flex-wrap items-center gap-2 rounded-[16px] bg-tarmac/90 p-2 shadow-[var(--shadow-float)] ring-1 ring-bone/10 backdrop-blur-xl lg:flex-nowrap lg:overflow-x-auto"
           >
-            <Segmented id="type" label="Tipo" options={TYPES} value={type} onChange={setType} />
-            <span aria-hidden className="h-8 w-px shrink-0 bg-bone/10" />
+            {/* Celular y tablet: tipo a todo el ancho arriba; municipio y orden abajo. Computador: una sola fila */}
+            <Segmented id="type" label="Tipo" options={TYPES} value={type} onChange={setType} stretch className="w-full lg:w-auto" />
+            <span aria-hidden className="hidden h-8 w-px shrink-0 bg-bone/10 lg:block" />
             <Segmented
               id="city"
               label="Municipio"
               options={[{ id: "all" as CityFilter, label: "Todas" }, ...CITIES.map((c) => ({ id: c as CityFilter, label: c }))]}
               value={city}
               onChange={setCity}
+              className="hidden lg:flex"
             />
-            <span aria-hidden className="h-8 w-px shrink-0 bg-bone/10" />
+            <CitySelect value={city} onChange={setCity} counts={counts} />
+            <span aria-hidden className="hidden h-8 w-px shrink-0 bg-bone/10 lg:block" />
             <motion.button
               onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
               whileTap={{ scale: 0.94 }}
-              className="flex h-12 shrink-0 items-center gap-2 rounded-[12px] px-3.5 text-[13px] font-semibold text-bone/85 hover:bg-bone/5"
+              aria-label={`Ordenar por precio: ${sort === "asc" ? "de menor a mayor" : "de mayor a menor"}`}
+              className="flex h-12 shrink-0 items-center gap-2 rounded-[12px] bg-asphalt px-3.5 text-[13px] font-semibold text-bone/85 hover:bg-bone/5 lg:bg-transparent"
             >
               <motion.span animate={{ rotate: sort === "asc" ? 0 : 180 }} transition={spring} className="flex">
                 <ArrowDownUp aria-hidden className="h-4 w-4 text-lane" />
               </motion.span>
-              {sort === "asc" ? "Menor precio" : "Mayor precio"}
+              <span className="sm:hidden">Precio {sort === "asc" ? "↑" : "↓"}</span>
+              <span className="hidden sm:inline">{sort === "asc" ? "Menor precio" : "Mayor precio"}</span>
             </motion.button>
           </motion.div>
         </div>
@@ -399,7 +440,7 @@ export default function Inventory() {
           la disponibilidad se confirma al cotizar.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button href="/" variant="ghost">
+          <Button href="/" variant="ghost" returnTo>
             Volver al inicio
           </Button>
           <Button href="/#cotizar">Cotizar otro vehículo</Button>

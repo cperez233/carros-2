@@ -117,6 +117,8 @@ type BtnProps = {
   external?: boolean;
   variant?: "lane" | "ghost" | "ink";
   type?: "button" | "submit";
+  /** Al volver al inicio, regresa al punto donde estaba el usuario antes de salir. */
+  returnTo?: boolean;
 };
 
 const variants = {
@@ -125,7 +127,7 @@ const variants = {
   ink: "bg-asphalt text-bone hover:bg-tarmac",
 };
 
-export function Button({ children, href, onClick, className = "", external, variant = "lane", type = "button" }: BtnProps) {
+export function Button({ children, href, onClick, className = "", external, variant = "lane", type = "button", returnTo }: BtnProps) {
   const hover = useCanHover();
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -171,7 +173,7 @@ export function Button({ children, href, onClick, className = "", external, vari
   };
   if (href)
     return (
-      <motion.a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} {...common}>
+      <motion.a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} data-return={returnTo || undefined} {...common}>
         {inner}
       </motion.a>
     );

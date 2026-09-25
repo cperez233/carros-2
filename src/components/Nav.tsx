@@ -145,6 +145,7 @@ function Corners({ page }: { page: Page }) {
           {page === "inventario" && (
             <motion.a
               href="/"
+              data-return
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}

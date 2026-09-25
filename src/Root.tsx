@@ -41,6 +41,24 @@ function scrollToSection(id: string, smooth: boolean) {
   if (el) announceArrival(id, smooth ? 0 : 650);
 }
 
+/** Posición del inicio al salir hacia el inventario, para "Volver al inicio". Sobrevive a recargar la pestaña. */
+const RETURN_KEY = "inicio-scroll";
+const saveReturn = (y: number) => {
+  try {
+    sessionStorage.setItem(RETURN_KEY, String(Math.round(y)));
+  } catch {
+    /* sin almacenamiento: vuelve arriba */
+  }
+};
+const readReturn = () => {
+  try {
+    const v = Number(sessionStorage.getItem(RETURN_KEY));
+    return Number.isFinite(v) && v > 0 ? v : null;
+  } catch {
+    return null;
+  }
+};
+
 /** Telón entre páginas: sube desde abajo para tapar y se levanta hacia arriba para mostrar la página nueva. */
 function Curtain({ phase }: { phase: Phase }) {
   return (
@@ -74,6 +92,7 @@ export default function Root() {
   const [path, setPath] = useState(currentPath);
   const [phase, setPhase] = useState<Phase>("idle");
   const pendingHash = useRef(typeof window !== "undefined" ? window.location.hash.slice(1) : "");
+  const pendingReturn = useRef<number | null>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const page = pageOf(path);
 
@@ -87,8 +106,12 @@ export default function Root() {
   useIsoLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
     const id = pendingHash.current;
+    const y = pendingReturn.current;
     pendingHash.current = "";
+    pendingReturn.current = null;
     if (id) setTimeout(() => scrollToSection(id, false), 60);
+    // Detrás del telón: salta al punto donde estaba antes de ir al inventario
+    else if (y !== null) setTimeout(() => window.scrollTo({ top: y, behavior: "instant" }), 60);
     document.title = TITLES[page];
   }, [path]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -107,13 +130,16 @@ export default function Root() {
   }, []);
 
   const navigate = useCallback(
-    (pathname: string, hash: string) => {
+    (pathname: string, hash: string, returning = false) => {
       const target = pageOf(pathname);
-      if (target === pageOf(window.location.pathname)) {
+      const from = pageOf(window.location.pathname);
+      if (target === from) {
         scrollToSection(hash, true);
         return;
       }
+      if (from === "home") saveReturn(window.scrollY);
       pendingHash.current = hash;
+      pendingReturn.current = returning && !hash ? readReturn() : null;
       switchTo(target === "inventario" ? "/inventario" : "/", true);
     },
     [switchTo]
@@ -134,9 +160,15 @@ export default function Root() {
       const url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return;
       e.preventDefault();
-      navigate(url.pathname, url.hash.slice(1));
+      navigate(url.pathname, url.hash.slice(1), a.hasAttribute("data-return"));
     };
-    const onPop = () => switchTo(window.location.pathname, false);
+    // Atrás/adelante del navegador: también vuelve al punto donde estaba en el inicio
+    const onPop = () => {
+      const target = pageOf(window.location.pathname);
+      if (target === "home") pendingReturn.current = readReturn();
+      else saveReturn(window.scrollY);
+      switchTo(window.location.pathname, false);
+    };
     document.addEventListener("click", onClick);
     window.addEventListener("popstate", onPop);
     return () => {
