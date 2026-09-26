@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useSpring, useTransform, type Variants } from "framer-motion";
+import { motion, useMotionValue, useSpring, type Variants } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
@@ -31,14 +31,22 @@ export function useCanHover() {
   return can;
 }
 
-/** Número que corre hasta el nuevo valor cuando cambia. */
+/** Número que cambia de una al nuevo valor: entra con un deslizamiento corto, sin pasar por cifras intermedias. */
 export function AnimatedNumber({ value, format }: { value: number; format: (v: number) => string }) {
-  const mv = useSpring(value, { stiffness: 90, damping: 20 });
-  useEffect(() => {
-    mv.set(value);
-  }, [mv, value]);
-  const text = useTransform(mv, (v) => format(v));
-  return <motion.span>{text}</motion.span>;
+  const text = format(value);
+  return (
+    <span className="inline-block overflow-hidden align-bottom">
+      <motion.span
+        key={text}
+        initial={{ y: "35%", opacity: 0.4 }}
+        animate={{ y: "0%", opacity: 1 }}
+        transition={{ duration: 0.22, ease }}
+        className="inline-block"
+      >
+        {text}
+      </motion.span>
+    </span>
+  );
 }
 
 /** Inclinación 3D siguiendo el puntero (solo con mouse). */

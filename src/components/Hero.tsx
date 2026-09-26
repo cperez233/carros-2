@@ -1,4 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
+import { Check, Minus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CITIES, cop, IMAGES, REGION, waLink } from "../data";
 import { INVENTORY } from "../inventory";
@@ -14,25 +15,34 @@ const ROWS: { label: string; on: boolean }[] = [
   { label: "Combustible y peajes", on: false },
 ];
 
-function Toggle({ on, delay }: { on: boolean; delay: number }) {
+/** Indicador de incluido / no incluido. No es un interruptor: se enciende solo para no invitar a tocarlo. */
+function Status({ on, delay }: { on: boolean; delay: number }) {
   const [lit, setLit] = useState(false);
   useEffect(() => {
     if (!on) return;
     const t = setTimeout(() => setLit(true), delay * 1000);
     return () => clearTimeout(t);
   }, [on, delay]);
+  if (!on)
+    return (
+      <span aria-hidden className="flex shrink-0 items-center gap-1.5 text-[13px] text-stone-dark">
+        <Minus className="h-4 w-4" />
+        No incluido
+      </span>
+    );
   return (
     <span
       aria-hidden
-      className={`relative flex h-[26px] w-[46px] shrink-0 items-center rounded-full p-[3px] transition-colors duration-500 ${
-        lit ? "bg-lane" : "bg-bone/15"
-      }`}
+      className={`flex shrink-0 items-center gap-1.5 text-[13px] font-semibold transition-colors duration-500 ${lit ? "text-lane" : "text-bone/25"}`}
     >
-      <motion.span
-        animate={{ x: lit ? 20 : 0 }}
-        transition={spring}
-        className={`h-5 w-5 rounded-full shadow-[0_1px_3px_rgba(0,0,0,.35)] ${lit ? "bg-asphalt" : "bg-bone/80"}`}
-      />
+      Incluido
+      <span
+        className={`flex h-[24px] w-[24px] items-center justify-center rounded-full transition-colors duration-500 ${lit ? "bg-lane" : "bg-bone/15"}`}
+      >
+        <motion.span initial={false} animate={{ scale: lit ? 1 : 0 }} transition={spring} className="flex">
+          <Check className="h-4 w-4 text-asphalt" strokeWidth={3} />
+        </motion.span>
+      </span>
     </span>
   );
 }
@@ -53,18 +63,18 @@ function TariffPanel() {
         {ROWS.map((r, i) => (
           <li
             key={r.label}
-            className={`group flex items-center justify-between gap-4 border-t border-bone/10 py-3 transition-[padding] duration-300 hover:pl-1.5 ${r.on ? "" : "text-stone-dark"}`}
+            className={`flex items-center justify-between gap-4 border-t border-bone/10 py-3 ${r.on ? "" : "text-stone-dark"}`}
           >
             <span className={`text-[16px] ${r.on ? "font-medium text-bone" : ""}`}>
               {r.label}
               <span className="sr-only">{r.on ? ": incluido" : ": no incluido"}</span>
             </span>
-            <Toggle on={r.on} delay={2.3 + i * 0.22} />
+            <Status on={r.on} delay={2.3 + i * 0.22} />
           </li>
         ))}
       </ul>
       <p className="mt-2 text-[14px] leading-relaxed text-stone">
-        Lo que está encendido ya viene en el precio.
+        Todo lo marcado ya viene en el precio.
       </p>
     </motion.div>
   );
